@@ -32,7 +32,7 @@
     bannerVisible: false,
     rotateEnabled: true,
     rotateSeconds: 12,
-    slides: { status: true, events: true, hours: true, games: true, leaderboard: true, memes: false },
+    slides: { status: true, events: true, hours: true, games: true, leaderboard: true, memes: false, faculty: true, },
     autoStatus: true,
     heroImageUrl: 'assets/hero/hero-image.jpg',
   };
@@ -323,6 +323,7 @@
       leaderboard: document.getElementById('show-leaderboard')?.checked ?? true,
       promo: (document.getElementById('show-promo')?.checked) ?? true,
       memes: (document.getElementById('show-memes')?.checked) ?? true,
+      
     };
     if (!s.slides.status && !s.slides.events && !s.slides.hours && !s.slides.games && !s.slides.promo && !s.slides.memes) {
       s.slides.status = true; // ensure at least one
