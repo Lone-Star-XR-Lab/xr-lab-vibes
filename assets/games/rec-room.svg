@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#0b1220"/>
+  <rect x="20" y="20" width="600" height="320" rx="18" fill="#fb923c" opacity="0.18" stroke="#fdba74" stroke-opacity="0.6"/>
+  <text x="50%" y="48%" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Roboto, Arial" font-weight="800" font-size="44">Rec Room</text>
+  <text x="50%" y="66%" text-anchor="middle" fill="#fed7aa" font-family="Segoe UI, Roboto, Arial" font-weight="600" font-size="22">Social / Minigames</text>
+</svg>
+

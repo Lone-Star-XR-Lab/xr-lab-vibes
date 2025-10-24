@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#0b1220"/>
+  <rect x="20" y="20" width="600" height="320" rx="18" fill="#6366f1" opacity="0.18" stroke="#a5b4fc" stroke-opacity="0.6"/>
+  <text x="50%" y="48%" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Roboto, Arial" font-weight="800" font-size="44">VRChat</text>
+  <text x="50%" y="66%" text-anchor="middle" fill="#c7d2fe" font-family="Segoe UI, Roboto, Arial" font-weight="600" font-size="22">Social / Worlds</text>
+</svg>
+

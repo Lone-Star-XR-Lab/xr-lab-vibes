@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360">
+  <rect width="640" height="360" fill="#0b1220"/>
+  <rect x="24" y="24" width="592" height="312" rx="16" fill="#ef4444" opacity="0.14" stroke="#fca5a5" stroke-opacity="0.6"/>
+  <text x="50%" y="46%" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Roboto, Arial" font-weight="800" font-size="40">After 3 songs of</text>
+  <text x="50%" y="62%" text-anchor="middle" fill="#e2e8f0" font-family="Segoe UI, Roboto, Arial" font-weight="800" font-size="40">Beat Saber</text>
+  <text x="50%" y="78%" text-anchor="middle" fill="#93c5fd" font-family="Segoe UI, Roboto, Arial" font-weight="600" font-size="18">Sweat level: Expert+</text>
+</svg>
+
