@@ -32,7 +32,7 @@
     bannerVisible: false,
     rotateEnabled: true,
     rotateSeconds: 12,
-    slides: { status: true, events: true, hours: true, games: true, memes: false },
+    slides: { status: true, events: true, hours: true, games: true, leaderboard: true, memes: false },
     autoStatus: true,
     heroImageUrl: 'assets/hero/hero-image.jpg',
   };
@@ -320,6 +320,7 @@
       events: document.getElementById('show-events').checked,
       hours: document.getElementById('show-hours').checked,
       games: (document.getElementById('show-games')?.checked) ?? true,
+      leaderboard: document.getElementById('show-leaderboard')?.checked ?? true,
       promo: (document.getElementById('show-promo')?.checked) ?? true,
       memes: (document.getElementById('show-memes')?.checked) ?? true,
     };
