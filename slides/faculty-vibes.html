@@ -1,50 +1,71 @@
-<div data-slide="faculty" class="p-12 text-left flex flex-col items-center">
+<section data-slide="faculty" class="h-full w-full bg-slate-800/70 rounded-2xl shadow-lg p-6 md:p-8 flex flex-col">
   <!-- Title -->
-  <div class="text-center mb-6">
-    <h2 class="text-[4.5rem] md:text-6xl font-bold text-cyan-300 leading-tight drop-shadow-lg whitespace-nowrap">
-      💡 Bring the Good Vibes to Your Classroom
+  <div class="text-center mb-8">
+    <div class="drac-eyebrow drac-accent text-4xl md:text-5xl">Faculty</div>
+    <div class="drac-bar mx-auto mt-3"></div>
+    <h2 class="text-[3.75rem] md:text-7xl font-extrabold leading-tight mt-4 drac-title">
+      Use the <span class="drac-accent">Vibe Board</span> in Your Class
     </h2>
-    <p class="text-gray-400 text-2xl mt-2">
-      Part of the <span class="text-cyan-400 font-semibold">Research & Innovation Center</span>
+    <p class="text-2xl md:text-[1.75rem] mt-2 drac-muted">
+      From the <span class="font-semibold text-[color:var(--drac-green)]">Research & Innovation Center</span>
     </p>
   </div>
 
   <!-- Two-column layout -->
-  <div class="grid md:grid-cols-2 gap-14 items-center max-w-7xl w-full mt-6">
-    <!-- Image -->
-    <div class="flex justify-center">
-      <img 
-        src="assets/images/vibeboard.webp" 
-        alt="Vibe Board display" 
-        class="rounded-3xl shadow-[0_0_60px_rgba(0,196,162,0.25)] w-[520px] max-w-full border border-slate-700 object-contain"
-      />
+  <div class="faculty-grid">
+    <div class="flex justify-center order-1 md:order-2">
+      <div class="media-frame max-w-[860px] md:max-w-[720px] lg:max-w-[820px]">
+        <img
+          src="assets/images/vibeboard.webp"
+          alt="Vibe Board display"
+          class="drac-img-shadow drac-glow"
+        />
+      </div>
     </div>
 
-    <!-- Text -->
-    <div>
-      <p class="text-2xl text-gray-200 mb-8 leading-relaxed">
-        The <span class="font-semibold text-white">Vibe Board</span> brings collaboration and creativity 
-        to the classroom — helping faculty share ideas, present content, and connect students 
-        through interactive technology.
-      </p>
+    <div class="faculty-content order-2 md:order-1">
+      <div class="drac-card p-6 md:p-7">
+        <p class="text-2xl md:text-[1.6rem] leading-relaxed">
+          The <span class="font-semibold">Vibe Board</span> is a large, touch-enabled display you can use to
+          present, annotate, cast devices, and run interactive web tools with your students.
+        </p>
+      </div>
 
-      <ul class="text-gray-300 space-y-3 text-xl mb-8 leading-relaxed">
-        <li>🖊️ Use the stylus to write, draw, and annotate over slides or web pages</li>
-        <li>📺 Instantly cast or mirror your laptop, tablet, or phone screen</li>
-        <li>📊 Display live dashboards, presentations, and interactive web tools</li>
-        <li>🌍 Integrate 360° and WebXR content for immersive learning</li>
-        <li>🎮 Pair with the <span class="text-cyan-400 font-semibold">XR Lab</span> for hands-on experiences</li>
+      <ul class="drac-list text-2xl md:text-[1.5rem] leading-relaxed grid md:grid-cols-2 md:gap-x-10 md:gap-y-3 gap-y-3">
+        <li>Write, draw, and annotate over slides or web pages with the stylus</li>
+        <li>Instantly cast or mirror your laptop, tablet, or phone</li>
+        <li>Show live dashboards, presentations, and interactive web apps</li>
+        <li>Pair with the <span class="font-semibold text-[color:var(--drac-red)]">XR Lab</span> for hands-on activities</li>
       </ul>
+      <div class="drac-callout p-5 md:p-6 text-left">
+        <p class="drac-accent font-semibold mb-3 text-2xl">Bring it to your class</p>
+        <ul class="drac-list space-y-2 text-xl md:text-[1.35rem] leading-relaxed">
+          <li>We'll help set up the Vibe Board, casting, and any web tools</li>
+          <li>Share slides, annotate live, or explore XR content with students</li>
+        <li>Questions or to reserve? Contact the <span class="font-semibold text-[color:var(--drac-green)]">Research & Innovation Center</span></li>
+        </ul>
+      </div>
     </div>
   </div>
 
-  <!-- Bottom Info -->
-  <div class="text-center text-lg text-gray-300 mt-10 max-w-4xl border-t border-slate-700/40 pt-4 leading-relaxed">
-    <p id="checkout-info">
-      Faculty can now check out and reserve the Vibe Board for class sessions — ask about scheduling time through the Research & Innovation Center.
-    </p>
-    <p class="text-gray-500 italic mt-2 text-base">
-      “Powered by the Research & Innovation Center”
-    </p>
+  <div class="faculty-footer">
+    <div class="drac-card text-center border border-slate-600/60 w-full">
+      <p class="text-xl leading-relaxed">
+        Want the Vibe Board in your classroom? Reserve it through the <span class="font-semibold text-[color:var(--drac-green)]">Research & Innovation Center</span>.
+      </p>
+      <p class="italic text-base text-slate-300 mt-2">Lab staff can assist with setup and content.</p>
+    </div>
+
+    <div class="drac-card flex flex-col md:flex-row items-center gap-5 w-full">
+      <img
+        alt="QR code to reserve the Vibe Board"
+        class="w-[160px] h-[160px] md:w-[200px] md:h-[200px] rounded-lg"
+        src="https://quickchart.io/qr?text=https%3A%2F%2Fyour.school%2Fvibe-board-booking&size=220&margin=2" />
+      <div class="min-w-0 text-center md:text-left">
+        <div class="text-xl font-bold text-white">Reserve the Vibe Board</div>
+        <a class="text-cyan-300 underline break-all" target="_blank" rel="noopener" href="https://your.school/vibe-board-booking">https://your.school/vibe-board-booking</a>
+        <p class="text-slate-400 text-sm mt-1">Point your phone camera at the code to open the booking page.</p>
+      </div>
+    </div>
   </div>
-</div>
+</section>

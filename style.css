@@ -4,27 +4,51 @@
 }
 .glow { animation: pulseGlow 2s infinite; }
 html, body { height: 100%; overflow: hidden; }
-body { background: radial-gradient(circle at top left, #0a1f3d, #020817); color: #f8fafc; }
+/* Dracula base background across all slides */
+body { background: radial-gradient(100% 120% at 0% 0%, #2b2d3a 0%, #1d1e26 60%, #191a21 100%); color: #f8fafc; }
 /* Removed promo scaling to keep text crisp */
 /* Hero visual */
-.hero-img { width: clamp(220px, 30vw, 420px); max-height: 260px; filter: drop-shadow(0 6px 24px rgba(0,0,0,0.35)); }
+.hero-img { width: clamp(280px, 38vw, 560px); max-height: 360px; filter: drop-shadow(0 8px 28px rgba(0,0,0,0.4)); }
+
+/* Ensure each slide clips its contents to the rounded panel */
+section[data-slide] { overflow: hidden; }
+.xr-brand { color: var(--drac-red); }
+.faculty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: clamp(14px, 2vw, 28px); align-items: stretch; flex: 1; width: 100%; }
+.faculty-grid > * { height: 100%; }
+.faculty-content { display: flex; flex-direction: column; gap: clamp(12px, 2vw, 20px); height: 100%; }
+.faculty-footer { position: absolute; left: 50%; bottom: clamp(6px, 1.8vh, 18px); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(98%, 1100px); padding: 0 clamp(12px, 3vw, 40px); box-sizing: border-box; }
+.faculty-footer > * { width: 100%; }
+.faculty-footer .drac-card, .faculty-footer .drac-callout { padding: clamp(10px, 2vw, 18px); }
+@media (min-width: 768px) {
+  .faculty-footer { flex-direction: row; justify-content: center; gap: clamp(16px, 3vw, 40px); }
+  .faculty-footer > * { width: calc(50% - clamp(10px, 2vw, 24px)); }
+}
 
 /* Hours - readability */
-.hours-list { display: grid; grid-auto-rows: min-content; gap: 8px; }
-.hours-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; background: rgba(15,23,42,0.7); border:1px solid rgba(71,85,105,0.7); padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; }
+.hours-list { display: grid; grid-auto-rows: 1fr; gap: 14px; }
+.hours-summary { display:flex; align-items:center; justify-content:space-between; gap:14px; background: rgba(15,23,42,0.7); border:1px solid rgba(71,85,105,0.7); padding: 16px 20px; border-radius: 16px; margin-bottom: 12px; }
 .hours-summary .label { color:#67e8f9; font-weight:700; }
-.hours-summary .value { color:#e5e7eb; font-weight:800; font-size:1.05rem; }
-.hours-row { display: grid; grid-template-columns: 160px 1fr; align-items: start; gap: 16px; padding: 12px 14px; border-radius: 14px; border:1px solid rgba(71, 85, 105, 0.5); background: rgba(2, 6, 23, 0.35); }
-.hours-row.today { background: rgba(2, 8, 23, 0.5); }
-.hours-row.closed { background: rgba(51, 7, 16, 0.35); border-color: rgba(244, 63, 94, 0.35); }
-.hours-day { font-weight: 800; color: #fff; font-size:1.05rem; letter-spacing:0.2px; }
-.hours-slots { display: grid; grid-template-columns: 1fr; gap: 6px; }
-.slot { display: flex; align-items: center; gap: 10px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(71, 85, 105, 0.7); padding: 10px 12px; border-radius: 10px; }
-.slot.now { border-color: rgba(34, 211, 238, 0.9); box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.18) inset; }
-.slot-label { font-size: 0.8rem; color: #67e8f9; font-weight: 600; min-width: 88px; }
-.slot-time { font-size: 1.15rem; color: #e5e7eb; font-weight: 800; letter-spacing: 0.2px; }
-.slot-badge { margin-left: auto; font-size: 0.75rem; color:#022c22; background:#34d399; border:1px solid #10b981; padding:3px 8px; border-radius:9999px; font-weight:800; }
-.badge-closed { display: inline-block; background: rgba(244, 63, 94, 0.2); color: #fecaca; border: 1px solid rgba(244, 63, 94, 0.5); padding: 6px 10px; border-radius: 9999px; font-weight: 700; }
+.hours-summary .value { color:#e5e7eb; font-weight:800; font-size:1.5rem; }
+.hours-row { display: grid; grid-template-columns: 200px 1fr; align-items: stretch; gap: 16px; padding: 18px 20px; border-radius: 16px; border:1px solid rgba(71, 85, 105, 0.5); background: rgba(2, 6, 23, 0.35); }
+.hours-row.today { background: rgba(2, 8, 23, 0.5); border-color: rgba(139, 233, 253, 0.55); box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.20) inset; }
+.hours-row.closed { background: var(--drac-red-10); border-color: var(--drac-red-40); }
+/* De-emphasize closed rows */
+.hours-row.closed .hours-day { color: #ffd7d7; }
+.hours-row.closed .slot { opacity: 0.6; }
+.hours-row.closed .slot-label, .hours-row.closed .slot-time { opacity: 0.8; }
+/* Improve contrast for open rows */
+.hours-row:not(.closed) .slot { border-color: rgba(139, 233, 253, 0.35); }
+.hours-row:not(.closed) .slot-time { color: #ffffff; }
+.hours-day { font-weight: 800; color: #fff; font-size:1.5rem; letter-spacing:0.2px; }
+.hours-slots { display: grid; grid-template-columns: 1fr; grid-auto-rows: 1fr; gap: 12px; }
+/* Center the CLOSED badge within closed rows */
+.hours-row.closed .hours-slots { display: flex; align-items: center; justify-content: center; height: 100%; }
+.slot { display: flex; align-items: center; gap: 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(71, 85, 105, 0.7); padding: 16px 18px; border-radius: 12px; height: 100%; }
+.slot.now { border-color: var(--drac-green); box-shadow: 0 0 0 2px rgba(80, 250, 123, 0.22) inset; }
+.slot-label { font-size: 1.1rem; color: #67e8f9; font-weight: 800; min-width: 120px; }
+.slot-time { font-size: 1.6rem; color: #e5e7eb; font-weight: 800; letter-spacing: 0.2px; }
+.slot-badge { margin-left: auto; font-size: 0.75rem; color:#0d1b12; background: var(--drac-green); border:1px solid #28d86a; padding:3px 8px; border-radius:9999px; font-weight:800; }
+.badge-closed { display: flex; align-items: center; justify-content: center; background: #ff5555; color: #ffffff; border: 1px solid #ff5555; padding: 14px 22px; border-radius: 9999px; font-weight: 800; font-size: 1.75rem; letter-spacing: 0.4px; line-height: 1; }
 .hours-note { margin-top: 8px; color:#cbd5e1; font-size:0.95rem; }
 
 /* Games grid */
@@ -40,3 +64,190 @@ body { background: radial-gradient(circle at top left, #0a1f3d, #020817); color:
 .meme-card { background: rgba(15, 23, 42, 0.6); border:1px solid rgba(71,85,105,0.7); border-radius: 14px; padding:10px; }
 .meme-img { width:100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; display:block; background:#0b1220; border:1px solid rgba(71,85,105,0.6); }
 .meme-caption { color:#cbd5e1; font-size:0.95rem; margin-top:6px; text-align:center; }
+
+/* Dracula theme helpers (scoped utility classes) */
+:root {
+  --drac-bg: #282a36;
+  --drac-current: #44475a;
+  --drac-foreground: #f8f8f2;
+  --drac-comment: #6272a4;
+  --drac-cyan: #8be9fd;
+  --drac-green: #50fa7b;
+  --drac-orange: #ffb86c;
+  --drac-pink: #ff79c6;
+  --drac-purple: #bd93f9;
+  --drac-red: #ff5555;
+  --drac-yellow: #f1fa8c;
+  /* Derived alphas for Dracula red */
+  --drac-red-10: rgba(255, 85, 85, 0.10);
+  --drac-red-12: rgba(255, 85, 85, 0.12);
+  --drac-red-18: rgba(255, 85, 85, 0.18);
+  --drac-red-40: rgba(255, 85, 85, 0.40);
+  --drac-red-45: rgba(255, 85, 85, 0.45);
+  --drac-red-55: rgba(255, 85, 85, 0.55);
+  /* Safe top/bottom margins for title & dots */
+  --safe-top: clamp(40px, 8vh, 96px);
+  --safe-bottom: clamp(36px, 7vh, 88px);
+}
+
+.drac-title { color: var(--drac-cyan); text-shadow: 0 0 14px rgba(139,233,253,0.25); }
+.drac-accent { color: var(--drac-purple); }
+.drac-muted { color: var(--drac-comment); }
+.drac-card { background: rgba(40,42,54,0.50); border: 1px solid var(--drac-current); border-radius: 16px; box-shadow: 0 6px 24px rgba(0,0,0,0.35); }
+.drac-callout { background: rgba(189,147,249,0.10); border: 1px solid rgba(189,147,249,0.6); border-radius: 14px; }
+.drac-glow { box-shadow: 0 0 36px rgba(189,147,249,0.18), 0 0 12px rgba(139,233,253,0.12); }
+.drac-img-shadow { filter: drop-shadow(0 10px 30px rgba(189,147,249,0.25)); }
+
+.drac-badge { display:inline-block; font-size:0.85rem; font-weight:700; letter-spacing:0.2px; color:#1b1c24; background: var(--drac-yellow); border:1px solid #d4ca6a; padding:4px 10px; border-radius:9999px; }
+
+.drac-list { list-style: none; padding-left: 0; margin: 0; }
+.drac-list li { position: relative; padding-left: 1.5rem; color: var(--drac-foreground); }
+.drac-list li::before { content: ""; position: absolute; left: 0; top: 0.55em; width: 0.6rem; height: 0.6rem; border-radius: 9999px; background: var(--drac-purple); box-shadow: 0 0 8px rgba(189,147,249,0.6); border: 1px solid var(--drac-comment); }
+.drac-list li:nth-child(2)::before { background: var(--drac-cyan); box-shadow: 0 0 8px rgba(139,233,253,0.5); }
+.drac-list li:nth-child(3)::before { background: var(--drac-green); box-shadow: 0 0 8px rgba(80,250,123,0.5); }
+.drac-list li:nth-child(4)::before { background: var(--drac-orange); box-shadow: 0 0 8px rgba(255,184,108,0.5); }
+.drac-list li:nth-child(5)::before { background: var(--drac-pink); box-shadow: 0 0 8px rgba(255,121,198,0.5); }
+
+/* Faculty eyebrow + bar */
+.drac-eyebrow { text-transform: uppercase; letter-spacing: 0.35em; font-weight: 800; }
+.drac-bar { height: 6px; width: 12rem; background: linear-gradient(90deg, var(--drac-pink), var(--drac-cyan)); border-radius: 9999px; box-shadow: 0 0 14px rgba(255,121,198,0.25), 0 0 10px rgba(139,233,253,0.18); }
+
+/* Dracula status colors (Open/Closed) */
+.drac-open-text { color: var(--drac-green) !important; }
+.drac-closed-text { color: var(--drac-red) !important; }
+.drac-ring-open { background: #50fa7b; box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+.drac-ring-closed { background: #ff5555; box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+
+/* Status slide grid fill helpers */
+.status-grid { grid-auto-rows: 1fr; }
+.status-card, .status-kiosk { min-height: 0 !important; height: 100% !important; }
+
+/* Status pill styles */
+.status-pill-open { background: #50fa7b; color: #0b1c12; border: 1px solid #2de86d; }
+.status-pill-closed { background: #ff5555; color: #ffffff; border: 1px solid #ff6e6e; }
+
+/* Responsive safeguards for smaller landscape viewports (no scroll) */
+@media (orientation: landscape) and (max-height: 820px) {
+  /* Status hero */
+  #status-hero { padding: 0.9rem 1.25rem; margin-bottom: 0.5rem; }
+  #status-hero #hero-status { font-size: clamp(2.75rem, 9vh, 5.5rem) !important; }
+  #status-hero #welcome-line { font-size: clamp(1.25rem, 2.8vh, 1.75rem) !important; }
+  .hero-img { max-height: 28vh; }
+  .status-grid { gap: 12px !important; }
+  .status-card { padding: 10px !important; }
+  #hero-time { font-size: clamp(2rem, 7vh, 3.25rem) !important; }
+  #hero-date { font-size: clamp(1rem, 2.2vh, 1.25rem) !important; }
+  #hours-line { font-size: clamp(1.5rem, 5.8vh, 2.25rem) !important; }
+  #location-line { font-size: clamp(1.25rem, 4.8vh, 2rem) !important; }
+  #kiosk-line { min-height: 120px; font-size: clamp(1.5rem, 5.5vh, 2.25rem) !important; }
+
+  /* Hours slide */
+  .hours-summary { padding: 10px 12px; }
+  .hours-summary .value { font-size: 1.25rem; }
+  .hours-list { gap: 10px; grid-auto-rows: min-content; }
+  .hours-row { grid-template-columns: 160px 1fr; padding: 12px 14px; }
+  .hours-day { font-size: 1.2rem; }
+  .hours-slots { gap: 8px; }
+  .slot { padding: 10px 12px; }
+  .slot-label { font-size: 0.95rem; min-width: 100px; }
+  .slot-time { font-size: 1.3rem; }
+  /* No scroll: scale down instead */
+  section[data-slide="hours"] #hours-list { overflow: hidden; }
+
+  /* Faculty slides (images + QR) */
+  section[data-slide^="faculty"] img { max-height: 42vh; }
+  img[alt^="QR code"] { width: 140px !important; height: 140px !important; }
+}
+
+/* Extra-tight landscape layout for very short screens */
+@media (orientation: landscape) and (max-height: 700px) {
+  #status-hero #hero-status { font-size: clamp(2.25rem, 8vh, 4.5rem) !important; }
+  #status-hero #welcome-line { font-size: clamp(1.1rem, 2.6vh, 1.5rem) !important; }
+  .hero-img { max-height: 22vh; }
+  .status-grid { gap: 10px !important; }
+  #kiosk-line { min-height: 100px; font-size: clamp(1.25rem, 5vh, 2rem) !important; }
+  .hours-summary { padding: 8px 10px; }
+  .hours-row { grid-template-columns: 150px 1fr; padding: 10px 12px; }
+  .slot-time { font-size: 1.15rem; }
+  section[data-slide^="faculty"] img { max-height: 38vh; }
+  section[data-slide^="faculty"] > .text-center { margin-bottom: 0.5rem !important; }
+  section[data-slide^="faculty"] h2.drac-title { font-size: clamp(1.9rem, 5.2vh, 2.8rem) !important; }
+  section[data-slide^="faculty"] p, section[data-slide^="faculty"] li { font-size: clamp(0.9rem, 1.8vh, 1.1rem) !important; }
+  img[alt^="QR code"] { width: 120px !important; height: 120px !important; }
+}
+
+/* Portrait: show rotate overlay, hide slides (landscape-only experience) */
+@media (orientation: portrait) {
+  #rotate-overlay { display: flex; }
+  #slides { display: none; }
+}
+/* Landscape iPad Pro scaling (no scroll) */
+@media (orientation: landscape) and (max-height: 1080px) {
+  /* Tighten general slide padding */
+  section[data-slide] { padding: 12px !important; }
+  section[data-slide="status"], section[data-slide="hours"] { padding-bottom: 8px !important; }
+  /* Status slide */
+  #status-hero { padding: 0.8rem 1.2rem !important; margin-bottom: 0.5rem !important; }
+  #status-hero #hero-status { font-size: clamp(3rem, 8.5vh, 6.2rem) !important; }
+  #status-hero #welcome-line { font-size: clamp(1.2rem, 2.6vh, 1.8rem) !important; }
+  .hero-img { max-height: 24vh !important; display: block !important; }
+  .status-grid { gap: 10px !important; }
+  .status-card { padding: 10px !important; }
+  #hero-time { font-size: clamp(2.25rem, 6.5vh, 3.5rem) !important; }
+  #hero-date { font-size: clamp(1.1rem, 2.2vh, 1.5rem) !important; }
+  #hours-line { font-size: clamp(1.6rem, 4.8vh, 2.2rem) !important; }
+  #location-line { font-size: clamp(1.35rem, 4vh, 2rem) !important; }
+  #kiosk-line { min-height: 96px !important; font-size: clamp(1.5rem, 4.6vh, 2.2rem) !important; }
+
+  /* Hours slide */
+  .hours-summary { padding: 10px 12px !important; }
+  .hours-summary .value { font-size: 1.25rem !important; }
+  .hours-list { gap: 8px !important; grid-auto-rows: min-content !important; }
+  .hours-row { grid-template-columns: 150px 1fr !important; padding: 10px 12px !important; border-radius: 12px !important; }
+  .hours-day { font-size: 1.2rem !important; }
+  .hours-slots { gap: 8px !important; }
+  .slot { padding: 10px 12px !important; }
+  .slot-label { font-size: 0.95rem !important; min-width: 100px !important; }
+  .slot-time { font-size: 1.3rem !important; }
+
+  /* Faculty slides */
+  section[data-slide^="faculty"] img { max-height: 34vh !important; }
+  section[data-slide^="faculty"] > .text-center { margin-bottom: 0.5rem !important; }
+  section[data-slide^="faculty"] h2.drac-title { font-size: clamp(2rem, 6vh, 3.2rem) !important; }
+  section[data-slide^="faculty"] .drac-eyebrow { font-size: clamp(1rem, 2.6vh, 1.6rem) !important; }
+  section[data-slide^="faculty"] .drac-card, section[data-slide^="faculty"] .drac-callout { padding: 10px 12px !important; }
+  section[data-slide^="faculty"] .grid { gap: 10px !important; }
+  section[data-slide^="faculty"] p, section[data-slide^="faculty"] li { font-size: clamp(0.95rem, 2vh, 1.2rem) !important; }
+  img[alt^="QR code"] { width: 140px !important; height: 140px !important; }
+}
+
+/* Consistent media frame for slide images */
+.media-frame { position: relative; border-radius: 26px; overflow: hidden; width: min(100%, fit-content); max-width: 100%; box-shadow: 0 10px 36px rgba(0,0,0,0.35); background: radial-gradient(circle at top, rgba(255,255,255,0.08), rgba(15,23,42,0.65)); padding: clamp(8px, 1.5vw, 16px); max-height: clamp(280px, 42vh, 460px); }
+.media-frame img { display:block; width:auto; height:auto; max-width: 100%; max-height: clamp(260px, 50vh, 520px); object-fit: contain; border-radius: clamp(12px, 2vw, 22px); }
+/* Reserve vertical safe space in the wrapper (not scaled) */
+#slides-wrapper {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left: clamp(12px, 3vw, 48px);
+  padding-right: clamp(12px, 3vw, 48px);
+  overflow: hidden;
+}
+
+#slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#slides [data-slide] {
+  height: 100%;
+  max-height: 100%;
+}
+section[data-slide^="faculty"] .faculty-content { text-align: left; }
+section[data-slide^="faculty"] .drac-list { gap: 0.4rem; }
+section[data-slide^="faculty"] .drac-list li { margin-bottom: 0.1rem; padding-left: 1.2rem; }
+section[data-slide^="faculty"] .drac-list li::before { left: 0.15rem; }

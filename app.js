@@ -31,8 +31,9 @@
     bannerText: '',
     bannerVisible: false,
     rotateEnabled: true,
-    rotateSeconds: 12,
-    slides: { status: true, events: true, hours: true, games: true, leaderboard: true, memes: false, faculty: true, },
+    rotateSeconds: 30,
+    // Default visible slides; disable Events, Promo, Memes by default
+    slides: { status: true, events: false, hours: true, games: true, leaderboard: true, promo: false, memes: false, faculty: true },
     autoStatus: true,
     heroImageUrl: 'assets/hero/hero-image.jpg',
   };
@@ -126,6 +127,18 @@
   let rotateTimer = null;
   let swipeInit = false;
 
+  // Slides now rely on CSS safe areas rather than JS scaling.
+  let globalScale = 1;
+  function applyGlobalScale() {
+    if (!slidesRoot) return;
+    slidesRoot.style.transformOrigin = '';
+    slidesRoot.style.transform = '';
+  }
+  function computeGlobalScale() {
+    globalScale = 1;
+    applyGlobalScale();
+  }
+
   function buildSlideOrder() {
     slideOrder = Array.from(slidesRoot.querySelectorAll('[data-slide]')).map(el => ({
       key: el.getAttribute('data-slide'),
@@ -141,6 +154,8 @@
       el.classList.toggle('hidden', key !== activeKey);
     });
     renderDots();
+    // Keep global scale consistent across slides
+    // (computed once from the largest slide)
   }
 
   function nextSlide() { showSlideByIndex(currentIndex + 1); }
@@ -206,6 +221,8 @@
     setupSwipeOnce();
     clearRotation();
     if (s.rotateEnabled) startRotation(s.rotateSeconds);
+    // Compute initial global scale from all slides
+    setTimeout(computeGlobalScale, 0);
   }
 
   // Admin modal open via easy gesture on large bottom-center area
@@ -261,7 +278,7 @@
     if (heroUrlEl) heroUrlEl.value = s.heroImageUrl || '';
     // rotation + screens
     document.getElementById('toggle-rotate').checked = !!s.rotateEnabled;
-    document.getElementById('input-rotate-seconds').value = s.rotateSeconds ?? 12;
+    document.getElementById('input-rotate-seconds').value = s.rotateSeconds ?? defaultSettings.rotateSeconds;
     document.getElementById('show-status').checked = s.slides?.status !== false;
     document.getElementById('show-events').checked = s.slides?.events !== false;
     document.getElementById('show-hours').checked = s.slides?.hours !== false;
@@ -314,7 +331,7 @@
     if (heroUrlEl) s.heroImageUrl = heroUrlEl.value.trim();
     // rotation + screens
     s.rotateEnabled = document.getElementById('toggle-rotate').checked;
-    s.rotateSeconds = Math.max(5, parseInt(document.getElementById('input-rotate-seconds').value || 12, 10));
+    s.rotateSeconds = Math.max(5, parseInt(document.getElementById('input-rotate-seconds').value || String(defaultSettings.rotateSeconds), 10));
     s.slides = {
       status: document.getElementById('show-status').checked,
       events: document.getElementById('show-events').checked,
@@ -506,18 +523,21 @@
   function setHeroStatus(open) {
     const hero = document.getElementById('hero-status');
     const heroBox = document.getElementById('status-hero');
+    const pill = document.getElementById('status-pill');
     const welcome = document.getElementById('welcome-line');
     const kiosk = document.getElementById('kiosk-line');
     if (hero) {
       hero.textContent = open ? 'OPEN' : 'CLOSED';
-      hero.classList.toggle('text-emerald-400', open);
-      hero.classList.toggle('text-rose-400', !open);
+      hero.classList.remove('drac-open-text', 'drac-closed-text', 'text-white', 'text-black');
+      if (open) {
+        hero.classList.add('text-black');
+      } else {
+        hero.classList.add('text-white');
+      }
     }
-    if (heroBox) {
-      heroBox.classList.toggle('ring-emerald-500/40', open);
-      heroBox.classList.toggle('bg-emerald-500/10', open);
-      heroBox.classList.toggle('ring-rose-500/40', !open);
-      heroBox.classList.toggle('bg-rose-500/10', !open);
+    if (pill) {
+      pill.classList.toggle('status-pill-open', open);
+      pill.classList.toggle('status-pill-closed', !open);
     }
     if (welcome) welcome.textContent = open ? "Open to all students — come on in, y'all!" : 'We\u2019re closed right now';
     if (kiosk) {
@@ -546,11 +566,11 @@
         hoursLine.innerHTML = `Closed · next ${fmt12h(st.next.start)}&ndash;${fmt12h(st.next.end)}`;
       } else {
         setHeroStatus(false);
-        hoursLine.textContent = 'Closed for the rest of the day';
+        hoursLine.textContent = 'Closed now — please visit during posted hours';
       }
     } else {
       setHeroStatus(s.status === 'OPEN');
-      hoursLine.textContent = s.status === 'OPEN' ? `Open until ${formatTime(s.closeTime)}` : 'Currently CLOSED';
+      hoursLine.textContent = s.status === 'OPEN' ? `Open until ${formatTime(s.closeTime)}` : 'Closed now — please visit during posted hours';
     }
   }
 
@@ -570,4 +590,7 @@
       if (s.rotateEnabled) startRotation(s.rotateSeconds);
     }
   });
+
+  // Refit on window resize/orientation change
+  window.addEventListener('resize', computeGlobalScale);
 })();

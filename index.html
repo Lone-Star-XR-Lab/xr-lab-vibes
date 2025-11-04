@@ -11,16 +11,17 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 </head>
-<body class="min-h-screen flex flex-col items-center justify-between p-8 text-center">
+<body class="min-h-screen flex flex-col items-stretch p-0 text-center overflow-hidden">
 
   <!-- Header -->
-  <header class="mt-8">
-    <h1 id="board-title" class="text-5xl font-bold glow">XR Lab</h1>
-    <p id="board-subtitle" class="text-lg text-gray-300 mt-2">Room E251 &middot; Information Board</p>
+  <header class="fixed top-4 left-6 z-50 flex items-baseline gap-4 text-left">
+    <h1 id="board-title" class="text-5xl font-bold glow leading-none">XR Lab</h1>
+    <p id="board-subtitle" class="text-sm md:text-base text-gray-300 opacity-90 whitespace-nowrap">Room E251 &middot; Information Board</p>
   </header>
 
   <!-- Fullscreen Slides (no scroll) -->
-  <main id="slides" class="relative max-w-8xl w-full flex-1 mt-6 overflow-hidden">
+  <main id="slides-wrapper" class="relative w-screen h-screen overflow-hidden">
+    <div id="slides" class="w-full h-full">
     <div class="slide-placeholder" data-src="slides/status.html"></div>
     <div class="slide-placeholder" data-src="slides/events.html"></div>
     <div class="slide-placeholder" data-src="slides/hours.html"></div>
@@ -29,18 +30,24 @@
     <div class="slide-placeholder" data-src="slides/promo.html"></div>
     <div class="slide-placeholder" data-src="slides/memes.html"></div>
     <div class="slide-placeholder" data-src="slides/faculty-vibes.html"></div>
-
+    <div class="slide-placeholder" data-src="slides/faculty-xr.html"></div>
+    <div class="slide-placeholder" data-src="slides/faculty-help.html"></div>
+    </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="mt-6 text-gray-400 text-sm w-full">
-    <p>XR Lab Info Board &middot; <span id="clock" class="font-mono"></span></p>
-  </footer>
   <div id="slide-dots" class="fixed left-1/2 -translate-x-1/2 bottom-4 z-50 flex items-center justify-center gap-2"></div>
 
   <!-- Invisible Easy Tap Area (bottom center) -->
   <div class="fixed inset-0 pointer-events-none select-none">
     <div id="admin-trigger" class="pointer-events-auto absolute left-1/2 -translate-x-1/2 bottom-0 w-[60%] h-[22%]"></div>
+  </div>
+
+  <!-- Rotate overlay for portrait orientation (landscape only) -->
+  <div id="rotate-overlay" class="fixed inset-0 hidden items-center justify-center text-center p-6 z-50 bg-slate-950/90">
+    <div>
+      <div class="text-3xl md:text-5xl font-extrabold text-white">Please rotate your device</div>
+      <div class="mt-3 text-slate-300 text-lg md:text-2xl">This board is designed for landscape displays.</div>
+    </div>
   </div>
 
   <!-- Admin Modal -->
