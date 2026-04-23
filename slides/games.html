@@ -1,27 +1,49 @@
-<section data-slide="games" class="bg-slate-800/70 p-6 rounded-2xl shadow-lg h-full hidden">
-  <h2 class="text-2xl font-semibold mb-2 text-cyan-300">Recommended VR Games</h2>
-  <p class="text-slate-300 mb-4">Available on our Quest 3 headsets — ask inside to play.</p>
-  <div class="grid md:grid-cols-3 gap-4 text-left">
-    <div class="game-tile !cursor-default">
-      <img class="game-img" src="assets/games/beat-saber.jpg" alt="Beat Saber" />
-      <div class="game-title">Beat Saber</div>
-      <div class="game-note">Rhythm</div>
-    </div>
-    <div class="game-tile !cursor-default">
-      <img class="game-img" src="assets/games/gorilla-tag.jpg" alt="Gorilla Tag" />
-      <div class="game-title">Gorilla Tag</div>
-      <div class="game-note">Movement/Tag</div>
-    </div>
-    <div class="game-tile !cursor-default">
-      <img class="game-img" src="assets/games/bait.jpg" alt="Bait!" />
-      <div class="game-title">Bait!</div>
-      <div class="game-note">Fishing</div>
-    </div>
-    <div class="game-tile !cursor-default">
-      <img class="game-img" src="assets/games/blaston.jpg" alt="Blaston" />
-      <div class="game-title">Blaston</div>
-      <div class="game-note">Duel</div>
+<section data-slide="games" class="bg-slate-800/70 p-6 md:p-8 rounded-2xl shadow-lg h-full hidden flex flex-col">
+  <div class="games-header">
+    <div class="min-w-0">
+      <div class="drac-eyebrow drac-accent text-lg md:text-xl">XR Lab Picks</div>
+      <div class="drac-bar mx-auto mt-3"></div>
+      <h2 class="games-title">Games, Experiences, and XR Picks</h2>
     </div>
   </div>
-  <p class="mt-3 text-sm text-slate-400">Availability may vary; staff can help set you up. New to VR? Try low‑motion options like Bait! first.</p>
+
+  <div class="games-board text-left">
+    <article id="games-feature" class="games-feature">
+      <div id="games-feature-media" class="games-feature-media" role="img" aria-label="Featured recommendation">
+        <img id="games-feature-img" class="games-feature-img hidden" alt="" />
+        <div class="games-feature-overlay"></div>
+        <div id="games-feature-badge" class="game-art-label">Start Here</div>
+        <div id="games-feature-art-title" class="game-art-title">First Steps</div>
+        <div id="games-feature-art-subtitle" class="game-art-subtitle">Hands-on intro to Quest controls</div>
+      </div>
+
+      <div class="games-feature-copy">
+        <div class="game-meta">
+          <span id="games-feature-category" class="game-category">Starter Experience</span>
+          <span id="games-feature-level" class="game-level">Best First Try</span>
+        </div>
+
+        <div class="games-feature-head">
+          <h3 id="games-feature-title" class="game-title">First Steps</h3>
+          <div id="games-feature-count" class="games-feature-count">1 / 9</div>
+        </div>
+
+        <p id="games-feature-description" class="game-description">
+          The best place to start for brand-new VR users. It builds comfort with hand presence,
+          grabbing, aiming, and moving before jumping into faster experiences.
+        </p>
+
+        <div id="games-feature-skills" class="game-skills">
+          <span class="game-skill">Confidence Building</span>
+          <span class="game-skill">Tech Fluency</span>
+          <span class="game-skill">Curiosity</span>
+        </div>
+      </div>
+    </article>
+
+    <aside class="games-roster-panel">
+      <div class="games-panel-eyebrow">Current Lineup</div>
+      <div id="games-roster" class="games-roster"></div>
+    </aside>
+  </div>
 </section>
