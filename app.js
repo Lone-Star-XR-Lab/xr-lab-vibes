@@ -420,6 +420,10 @@
 
   // Slides now rely on CSS safe areas rather than JS scaling.
   let globalScale = 1;
+  const initialFeaturedGameIndex = gameShowcaseItems.length
+    ? Math.floor(Math.random() * gameShowcaseItems.length)
+    : 0;
+
   function applyGlobalScale() {
     if (!slidesRoot) return;
     slidesRoot.style.transformOrigin = '';
@@ -451,7 +455,6 @@
       category: document.getElementById('games-feature-category'),
       level: document.getElementById('games-feature-level'),
       title: document.getElementById('games-feature-title'),
-      count: document.getElementById('games-feature-count'),
       description: document.getElementById('games-feature-description'),
       skills: document.getElementById('games-feature-skills'),
       roster: document.getElementById('games-roster'),
@@ -539,7 +542,6 @@
     if (nodes.category) nodes.category.textContent = item.category;
     if (nodes.level) nodes.level.textContent = item.level;
     if (nodes.title) nodes.title.textContent = item.title;
-    if (nodes.count) nodes.count.textContent = `${featuredGameIndex + 1} / ${gameShowcaseItems.length}`;
     if (nodes.description) nodes.description.textContent = item.description;
     if (nodes.skills) {
       nodes.skills.innerHTML = '';
@@ -573,6 +575,8 @@
     if (isGamesSlideActive()) startGamesRotation();
     else clearGamesRotation();
   }
+
+  featuredGameIndex = initialFeaturedGameIndex;
 
   function showSlideByIndex(i) {
     if (enabledKeys.length === 0) return;
