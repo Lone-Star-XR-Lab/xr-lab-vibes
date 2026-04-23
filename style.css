@@ -3,7 +3,7 @@
   50% { text-shadow: 0 0 20px #00fce6, 0 0 40px #00fce6; }
 }
 .glow { animation: pulseGlow 2s infinite; }
-html, body { height: 100%; overflow: hidden; }
+html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 /* Dracula base background across all slides */
 body { background: radial-gradient(100% 120% at 0% 0%, #2b2d3a 0%, #1d1e26 60%, #191a21 100%); color: #f8fafc; }
 /* Removed promo scaling to keep text crisp */
@@ -406,6 +406,7 @@ section[data-slide] { overflow: hidden; }
   flex-direction: column;
   justify-content: flex-start;
   padding: 14px;
+  overflow: hidden;
   background:
     radial-gradient(circle at top, rgba(139, 233, 253, 0.08), rgba(40, 42, 54, 0) 38%),
     linear-gradient(180deg, rgba(50, 53, 70, 0.95), rgba(22, 24, 34, 0.98));
@@ -423,6 +424,22 @@ section[data-slide] { overflow: hidden; }
   grid-template-columns: 1fr;
   gap: 9px;
   min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139, 233, 253, 0.45) rgba(17, 24, 39, 0.35);
+}
+.games-roster::-webkit-scrollbar {
+  width: 8px;
+}
+.games-roster::-webkit-scrollbar-track {
+  background: rgba(17, 24, 39, 0.35);
+  border-radius: 9999px;
+}
+.games-roster::-webkit-scrollbar-thumb {
+  background: rgba(139, 233, 253, 0.45);
+  border-radius: 9999px;
 }
 .games-roster-item {
   display: flex;
@@ -670,6 +687,7 @@ section[data-slide] { overflow: hidden; }
   padding-left: clamp(12px, 3vw, 48px);
   padding-right: clamp(12px, 3vw, 48px);
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 #slides {

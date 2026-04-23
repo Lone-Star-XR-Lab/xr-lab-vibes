@@ -4,6 +4,7 @@
   'use strict';
   // Shared state used by multiple functions
   let currentSettings = null;
+  const SETTINGS_STORAGE_KEY = 'vibeBoardSettings';
   const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const defaultLabHours = {
     Monday: { closed: true, start: '09:00', end: '17:00' },
@@ -141,6 +142,28 @@
       background: 'linear-gradient(135deg, #412860 0%, #7750ae 42%, #1e1d32 100%)',
     },
     {
+      title: 'Cubism',
+      category: 'Puzzle Game',
+      level: 'Calm Challenge',
+      badge: 'Think',
+      subtitle: 'Rotate, fit, and solve in 3D',
+      description: 'A thoughtful puzzle game that is great for spatial reasoning, patience, and working through a problem one move at a time.',
+      skills: ['Spatial Reasoning', 'Problem Solving', 'Patience'],
+      image: 'assets/games/cubism.jpg',
+      background: 'linear-gradient(135deg, #2a3d61 0%, #4c6ba1 42%, #1a2130 100%)',
+    },
+    {
+      title: 'Hand Physics Lab',
+      category: 'Interaction Demo',
+      level: 'Hands-On Play',
+      badge: 'Hands First',
+      subtitle: 'Experiment with hand tracking',
+      description: 'A fun way to explore hand tracking and object interaction while building comfort, curiosity, and confidence with natural VR input.',
+      skills: ['Tech Fluency', 'Experimentation', 'Curiosity'],
+      image: 'assets/games/hand-physics-lab.jpg',
+      background: 'linear-gradient(135deg, #3b2b24 0%, #715042 42%, #1d1f29 100%)',
+    },
+    {
       title: 'Bait!',
       category: 'Relaxed Experience',
       level: 'Low Motion',
@@ -174,7 +197,7 @@
 
   function loadSettings() {
     try {
-      const raw = localStorage.getItem('vibeBoardSettings');
+      const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
       if (!raw) return normalizeSettings();
       const parsed = JSON.parse(raw);
       return normalizeSettings(parsed);
@@ -184,7 +207,60 @@
   }
 
   function saveSettings(s) {
-    localStorage.setItem('vibeBoardSettings', JSON.stringify(normalizeSettings(s)));
+    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(normalizeSettings(s)));
+    requestPersistentStorage();
+  }
+
+  async function requestPersistentStorage() {
+    try {
+      const storage = navigator.storage;
+      if (!storage?.persisted || !storage?.persist) return false;
+      const alreadyPersistent = await storage.persisted();
+      if (alreadyPersistent) return true;
+      return await storage.persist();
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function buildSettingsBackup() {
+    return {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      settings: normalizeSettings(currentSettings || loadSettings()),
+    };
+  }
+
+  function downloadSettingsBackup() {
+    const payload = JSON.stringify(buildSettingsBackup(), null, 2);
+    const blob = new Blob([payload], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const stamp = new Date().toISOString().slice(0, 10);
+    link.href = url;
+    link.download = `xr-lab-vibes-settings-${stamp}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  }
+
+  function readImportedSettings(rawText) {
+    const parsed = JSON.parse(rawText);
+    const candidate = parsed?.settings && typeof parsed.settings === 'object' ? parsed.settings : parsed;
+    if (!candidate || typeof candidate !== 'object' || Array.isArray(candidate)) {
+      throw new Error('That file does not contain valid board settings.');
+    }
+    return normalizeSettings(candidate);
+  }
+
+  async function importSettingsFile(file) {
+    if (!file) return;
+    const text = await file.text();
+    const settings = readImportedSettings(text);
+    saveSettings(settings);
+    applySettings(settings);
+    openAdmin();
   }
 
   function applySettings(s) {
@@ -325,9 +401,22 @@
   let currentIndex = 0;
   let rotateTimer = null;
   let swipeInit = false;
+  let wheelInit = false;
   let featuredGameIndex = 0;
   let gamesRotateTimer = null;
   let gamesAnimationTimer = null;
+  let suppressTapUntil = 0;
+  let wheelDelta = 0;
+  let wheelResetTimer = null;
+
+  const SWIPE_THRESHOLD_PX = 60;
+  const TAP_MAX_TRAVEL_PX = 18;
+  const TAP_MAX_DURATION_MS = 350;
+  const TAP_SUPPRESS_MS = 400;
+  const TAP_SIDE_ZONE_RATIO = 0.2;
+  const TAP_SIDE_ZONE_MIN_PX = 120;
+  const WHEEL_NAV_THRESHOLD = 90;
+  const WHEEL_NAV_COOLDOWN_MS = 450;
 
   // Slides now rely on CSS safe areas rather than JS scaling.
   let globalScale = 1;
@@ -501,6 +590,43 @@
   function nextSlide() { showSlideByIndex(currentIndex + 1); }
   function prevSlide() { showSlideByIndex(currentIndex - 1); }
 
+  function resetRotationAfterManualNav() {
+    const s = loadSettings();
+    if (s.rotateEnabled) startRotation(s.rotateSeconds);
+    else clearRotation();
+  }
+
+  function navigateSlides(direction) {
+    if (direction > 0) nextSlide();
+    else prevSlide();
+    resetRotationAfterManualNav();
+  }
+
+  function isInteractiveNavTarget(target) {
+    return Boolean(target?.closest('button, a, input, textarea, select, label, summary, [role="button"], [contenteditable="true"]'));
+  }
+
+  function getScrollableAncestor(target) {
+    let node = target instanceof Element ? target : null;
+    while (node && node !== slidesRoot) {
+      const styles = window.getComputedStyle(node);
+      const canScrollY = /(auto|scroll)/.test(styles.overflowY) && node.scrollHeight > node.clientHeight + 1;
+      if (canScrollY) return node;
+      node = node.parentElement;
+    }
+    return null;
+  }
+
+  function shouldKeepNativeWheel(target, delta) {
+    const scrollable = getScrollableAncestor(target);
+    if (!scrollable) return false;
+    const atTop = scrollable.scrollTop <= 0;
+    const atBottom = scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 1;
+    if (delta < 0 && !atTop) return true;
+    if (delta > 0 && !atBottom) return true;
+    return false;
+  }
+
   function clearRotation() {
     if (rotateTimer) {
       clearInterval(rotateTimer);
@@ -534,21 +660,89 @@
   function setupSwipeOnce() {
     if (swipeInit) return;
     swipeInit = true;
-    let startX = 0, startY = 0, tracking = false;
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+    let tracking = false;
     slidesRoot.addEventListener('pointerdown', (e) => {
-      startX = e.clientX; startY = e.clientY; tracking = true;
+      if (isInteractiveNavTarget(e.target)) return;
+      startX = e.clientX;
+      startY = e.clientY;
+      startTime = Date.now();
+      tracking = true;
     });
     slidesRoot.addEventListener('pointerup', (e) => {
       if (!tracking) return;
       tracking = false;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
-        if (dx < 0) nextSlide(); else prevSlide();
-        const s = loadSettings();
-        if (s.rotateEnabled) startRotation(s.rotateSeconds);
+      const elapsed = Date.now() - startTime;
+      if (Math.abs(dx) > SWIPE_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
+        suppressTapUntil = Date.now() + TAP_SUPPRESS_MS;
+        navigateSlides(dx < 0 ? 1 : -1);
+        return;
+      }
+      const movedLittle = Math.abs(dx) <= TAP_MAX_TRAVEL_PX && Math.abs(dy) <= TAP_MAX_TRAVEL_PX;
+      if (elapsed <= TAP_MAX_DURATION_MS && movedLittle) {
+        maybeNavigateByTap(e);
       }
     });
+    ['pointercancel', 'pointerleave'].forEach((eventName) => {
+      slidesRoot.addEventListener(eventName, () => {
+        tracking = false;
+      });
+    });
+  }
+
+  function getTapZoneWidth() {
+    return Math.max(TAP_SIDE_ZONE_MIN_PX, Math.round(window.innerWidth * TAP_SIDE_ZONE_RATIO));
+  }
+
+  function maybeNavigateByTap(event) {
+    if (Date.now() < suppressTapUntil) return;
+    if (isInteractiveNavTarget(event.target)) return;
+    const zoneWidth = getTapZoneWidth();
+    if (event.clientX <= zoneWidth) {
+      navigateSlides(-1);
+    } else if (event.clientX >= window.innerWidth - zoneWidth) {
+      navigateSlides(1);
+    }
+  }
+
+  function setupWheelOnce() {
+    if (wheelInit) return;
+    wheelInit = true;
+    let lastWheelNavAt = 0;
+
+    slidesRoot.addEventListener('wheel', (e) => {
+      if (enabledKeys.length < 2) return;
+      if (e.ctrlKey) return;
+
+      const dominantDelta = Math.abs(e.deltaY) >= Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (!dominantDelta) return;
+      if (shouldKeepNativeWheel(e.target, dominantDelta)) return;
+
+      e.preventDefault();
+
+      if (wheelResetTimer) clearTimeout(wheelResetTimer);
+      wheelResetTimer = setTimeout(() => {
+        wheelDelta = 0;
+        wheelResetTimer = null;
+      }, 180);
+
+      if (wheelDelta && Math.sign(wheelDelta) !== Math.sign(dominantDelta)) {
+        wheelDelta = 0;
+      }
+      wheelDelta += dominantDelta;
+
+      const now = Date.now();
+      if (now - lastWheelNavAt < WHEEL_NAV_COOLDOWN_MS) return;
+      if (Math.abs(wheelDelta) < WHEEL_NAV_THRESHOLD) return;
+
+      navigateSlides(wheelDelta > 0 ? 1 : -1);
+      lastWheelNavAt = now;
+      wheelDelta = 0;
+    }, { passive: false });
   }
 
   function applyCarouselSettings(s) {
@@ -559,6 +753,7 @@
     currentIndex = 0;
     showSlideByIndex(0);
     setupSwipeOnce();
+    setupWheelOnce();
     clearRotation();
     if (s.rotateEnabled) startRotation(s.rotateSeconds);
     // Compute initial global scale from all slides
@@ -645,6 +840,10 @@
     modal.classList.remove('flex');
   }
 
+  const importSettingsButton = document.getElementById('import-settings');
+  const exportSettingsButton = document.getElementById('export-settings');
+  const importSettingsInput = document.getElementById('settings-import-file');
+
   // Admin controls
   document.getElementById('admin-close').addEventListener('click', closeAdmin);
   document.getElementById('cancel-admin').addEventListener('click', closeAdmin);
@@ -666,6 +865,25 @@
     saveSettings(s);
     applySettings(s);
   });
+  if (exportSettingsButton) {
+    exportSettingsButton.addEventListener('click', downloadSettingsBackup);
+  }
+  if (importSettingsButton && importSettingsInput) {
+    importSettingsButton.addEventListener('click', () => importSettingsInput.click());
+    importSettingsInput.addEventListener('change', async (e) => {
+      const input = e.target;
+      const file = input.files?.[0];
+      if (!file) return;
+      try {
+        await importSettingsFile(file);
+        window.alert('Settings imported successfully.');
+      } catch (error) {
+        window.alert(error?.message || 'Unable to import settings from that file.');
+      } finally {
+        input.value = '';
+      }
+    });
+  }
   document.getElementById('save-admin').addEventListener('click', () => {
     const s = loadSettings();
     let editedHours;
@@ -728,6 +946,7 @@
 
   (async () => {
     await loadSlides();
+    requestPersistentStorage();
     const boot = loadSettings();
     applySettings(boot);
     buildHours();
@@ -955,13 +1174,9 @@
     const modalOpen = !modal.classList.contains('hidden');
     if (editing || modalOpen) return;
     if (e.key === 'ArrowRight') {
-      nextSlide();
-      const s = loadSettings();
-      if (s.rotateEnabled) startRotation(s.rotateSeconds);
+      navigateSlides(1);
     } else if (e.key === 'ArrowLeft') {
-      prevSlide();
-      const s = loadSettings();
-      if (s.rotateEnabled) startRotation(s.rotateSeconds);
+      navigateSlides(-1);
     }
   });
 

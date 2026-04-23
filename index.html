@@ -182,7 +182,12 @@
       </div>
 
       <div class="px-6 py-4 border-t border-slate-700 flex items-center justify-between bg-slate-900">
-        <button id="reset-defaults" class="text-slate-300 hover:text-white">Reset to defaults</button>
+        <div class="flex items-center gap-3 flex-wrap">
+          <button id="reset-defaults" class="text-slate-300 hover:text-white">Reset to defaults</button>
+          <button id="export-settings" class="text-slate-300 hover:text-white">Export settings</button>
+          <button id="import-settings" class="text-slate-300 hover:text-white">Import settings</button>
+          <input id="settings-import-file" type="file" accept="application/json,.json" class="hidden" />
+        </div>
         <div class="flex gap-3">
           <button id="cancel-admin" class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white">Cancel</button>
           <button id="save-admin" class="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold">Save</button>
