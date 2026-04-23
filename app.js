@@ -4,6 +4,28 @@
   'use strict';
   // Shared state used by multiple functions
   let currentSettings = null;
+  const DAY_ORDER = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  const defaultLabHours = {
+    Monday: { closed: true, start: '09:00', end: '17:00' },
+    Tuesday: { closed: false, start: '09:00', end: '16:00' },
+    Wednesday: { closed: false, start: '09:00', end: '16:00' },
+    Thursday: { closed: true, start: '09:00', end: '17:00' },
+    Friday: { closed: false, start: '09:00', end: '14:30' },
+  };
+
+  function cloneLabHours(source = defaultLabHours) {
+    const hours = {};
+    DAY_ORDER.forEach((day) => {
+      const fallback = defaultLabHours[day];
+      const raw = source?.[day] || fallback;
+      hours[day] = {
+        closed: raw?.closed ?? fallback.closed,
+        start: raw?.start || fallback.start,
+        end: raw?.end || fallback.end,
+      };
+    });
+    return hours;
+  }
 
   // Live Clock (24h or 12h based on locale)
   const clock = document.getElementById('clock');
@@ -36,25 +58,36 @@
     slides: { status: true, events: false, hours: true, games: true, leaderboard: true, promo: false, memes: false, faculty: true },
     autoStatus: true,
     heroImageUrl: 'assets/hero/hero-image.jpg',
+    labHours: cloneLabHours(),
   };
+
+  function normalizeSettings(raw = {}) {
+    return {
+      ...defaultSettings,
+      ...raw,
+      slides: { ...defaultSettings.slides, ...(raw.slides || {}) },
+      labHours: cloneLabHours(raw.labHours),
+    };
+  }
 
   function loadSettings() {
     try {
       const raw = localStorage.getItem('vibeBoardSettings');
-      if (!raw) return { ...defaultSettings };
+      if (!raw) return normalizeSettings();
       const parsed = JSON.parse(raw);
-      return { ...defaultSettings, ...parsed };
+      return normalizeSettings(parsed);
     } catch (_) {
-      return { ...defaultSettings };
+      return normalizeSettings();
     }
   }
 
   function saveSettings(s) {
-    localStorage.setItem('vibeBoardSettings', JSON.stringify(s));
+    localStorage.setItem('vibeBoardSettings', JSON.stringify(normalizeSettings(s)));
   }
 
   function applySettings(s) {
-    currentSettings = s;
+    currentSettings = normalizeSettings(s);
+    s = currentSettings;
     // Title + subtitle
     const titleEl = document.getElementById('board-title');
     const subEl = document.getElementById('board-subtitle');
@@ -75,6 +108,8 @@
     const mins = Number(s.refreshMinutes) || 0;
     if (meta) meta.setAttribute('content', String(Math.max(0, Math.floor(mins * 60))));
     setAutoReload(mins);
+    buildHours();
+    buildHoursSummary();
     applyCarouselSettings(s);
   }
 
@@ -87,6 +122,68 @@
       return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
     return value || '';
+  }
+
+  function getDaySessions(day, hours = currentSettings?.labHours || defaultSettings.labHours) {
+    const entry = hours?.[day];
+    if (!entry || entry.closed || !entry.start || !entry.end) return null;
+    return [[entry.start, entry.end]];
+  }
+
+  function dayInputKey(day) {
+    return day.toLowerCase();
+  }
+
+  function syncHoursEditorRow(day) {
+    const key = dayInputKey(day);
+    const closed = document.getElementById(`hours-${key}-closed`);
+    const open = document.getElementById(`hours-${key}-open`);
+    const close = document.getElementById(`hours-${key}-close`);
+    if (!closed || !open || !close) return;
+    const disabled = closed.checked;
+    open.disabled = disabled;
+    close.disabled = disabled;
+    open.classList.toggle('opacity-50', disabled);
+    close.classList.toggle('opacity-50', disabled);
+    open.classList.toggle('cursor-not-allowed', disabled);
+    close.classList.toggle('cursor-not-allowed', disabled);
+  }
+
+  function populateHoursEditor(hours) {
+    DAY_ORDER.forEach((day) => {
+      const key = dayInputKey(day);
+      const entry = hours?.[day] || defaultLabHours[day];
+      const closed = document.getElementById(`hours-${key}-closed`);
+      const open = document.getElementById(`hours-${key}-open`);
+      const close = document.getElementById(`hours-${key}-close`);
+      if (!closed || !open || !close) return;
+      closed.checked = !!entry.closed;
+      open.value = entry.start || defaultLabHours[day].start;
+      close.value = entry.end || defaultLabHours[day].end;
+      syncHoursEditorRow(day);
+    });
+  }
+
+  function readHoursEditor() {
+    const hours = {};
+    for (const day of DAY_ORDER) {
+      const key = dayInputKey(day);
+      const closed = document.getElementById(`hours-${key}-closed`);
+      const open = document.getElementById(`hours-${key}-open`);
+      const close = document.getElementById(`hours-${key}-close`);
+      if (!closed || !open || !close) continue;
+      const start = open.value || defaultLabHours[day].start;
+      const end = close.value || defaultLabHours[day].end;
+      if (!closed.checked && start >= end) {
+        throw new Error(`${day}: close time must be later than open time.`);
+      }
+      hours[day] = {
+        closed: closed.checked,
+        start,
+        end,
+      };
+    }
+    return cloneLabHours(hours);
   }
 
   // Banner element management
@@ -264,6 +361,10 @@
   }
 
   const modal = document.getElementById('admin-modal');
+  DAY_ORDER.forEach((day) => {
+    const input = document.getElementById(`hours-${dayInputKey(day)}-closed`);
+    if (input) input.addEventListener('change', () => syncHoursEditorRow(day));
+  });
   function openAdmin() {
     const s = loadSettings();
     document.getElementById('input-title').value = s.title;
@@ -288,6 +389,11 @@
     if (showPromo) showPromo.checked = s.slides?.promo !== false;
     const showMemes = document.getElementById('show-memes');
     if (showMemes) showMemes.checked = s.slides?.memes !== false;
+    const showLeaderboard = document.getElementById('show-leaderboard');
+    if (showLeaderboard) showLeaderboard.checked = s.slides?.leaderboard !== false;
+    const showFaculty = document.getElementById('show-faculty');
+    if (showFaculty) showFaculty.checked = s.slides?.faculty !== false;
+    populateHoursEditor(s.labHours);
     modal.classList.remove('hidden');
     modal.classList.add('flex');
   }
@@ -319,6 +425,13 @@
   });
   document.getElementById('save-admin').addEventListener('click', () => {
     const s = loadSettings();
+    let editedHours;
+    try {
+      editedHours = readHoursEditor();
+    } catch (error) {
+      window.alert(error.message);
+      return;
+    }
     s.title = document.getElementById('input-title').value.trim() || defaultSettings.title;
     s.subtitle = document.getElementById('input-subtitle').value.trim() || defaultSettings.subtitle;
     s.location = document.getElementById('input-location').value.trim() || defaultSettings.location;
@@ -329,6 +442,7 @@
     s.autoStatus = document.getElementById('toggle-auto-status').checked;
     const heroUrlEl = document.getElementById('input-hero-url');
     if (heroUrlEl) s.heroImageUrl = heroUrlEl.value.trim();
+    s.labHours = editedHours;
     // rotation + screens
     s.rotateEnabled = document.getElementById('toggle-rotate').checked;
     s.rotateSeconds = Math.max(5, parseInt(document.getElementById('input-rotate-seconds').value || String(defaultSettings.rotateSeconds), 10));
@@ -340,24 +454,15 @@
       leaderboard: document.getElementById('show-leaderboard')?.checked ?? true,
       promo: (document.getElementById('show-promo')?.checked) ?? true,
       memes: (document.getElementById('show-memes')?.checked) ?? true,
-      
+      faculty: (document.getElementById('show-faculty')?.checked) ?? true,
     };
-    if (!s.slides.status && !s.slides.events && !s.slides.hours && !s.slides.games && !s.slides.promo && !s.slides.memes) {
+    if (!s.slides.status && !s.slides.events && !s.slides.hours && !s.slides.games && !s.slides.leaderboard && !s.slides.promo && !s.slides.memes && !s.slides.faculty) {
       s.slides.status = true; // ensure at least one
     }
     saveSettings(s);
     applySettings(s);
     closeAdmin();
   });
-
-  // Lab hours data (must be available before tick/buildHoursSummary)
-  const labHours = {
-    Monday: null,
-    Tuesday: [['09:00', '12:30'], ['13:00', '16:00']],
-    Wednesday: [['09:00', '12:30'], ['13:00', '16:00']],
-    Thursday: null,
-    Friday: [['09:00', '12:30'], ['13:00', '14:30']],
-  };
 
   // Load slides from external files then boot app
   async function loadSlides() {
@@ -409,61 +514,81 @@
     return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   }
 
+  function formatSessionsForSign(sessions) {
+    if (!sessions || sessions.length === 0) return 'Closed';
+    return sessions.map(([start, end]) => `${fmt12h(start)} - ${fmt12h(end)}`).join(' / ');
+  }
+
   function buildHours() {
     const hoursList = document.getElementById('hours-list');
     if (!hoursList) return;
-    const order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     const todayName = new Date().toLocaleDateString(undefined, { weekday: 'long' });
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const hours = currentSettings?.labHours || defaultSettings.labHours;
     hoursList.innerHTML = '';
-    order.forEach(day => {
+    DAY_ORDER.forEach(day => {
       const row = document.createElement('div');
       const isToday = day === todayName;
-      const sessions = labHours[day];
-      row.className = 'hours-row' + (isToday ? ' today' : '') + (!sessions ? ' closed' : '');
+      const sessions = getDaySessions(day, hours);
+      row.className = 'hours-row';
+      if (isToday) row.classList.add('today');
       const dayEl = document.createElement('div');
       dayEl.className = 'hours-day';
-      dayEl.textContent = day;
-      const slots = document.createElement('div');
-      slots.className = 'hours-slots';
-      if (!sessions) {
-        const closed = document.createElement('span');
-        closed.className = 'badge-closed';
-        closed.textContent = 'Closed';
-        slots.appendChild(closed);
-      } else {
-        const labels = ['Morning', 'Afternoon'];
-        // Determine current time in minutes for "Now" indicator
-        const now = new Date();
-        const nowMin = now.getHours() * 60 + now.getMinutes();
-        sessions.forEach(([s, e], idx) => {
-          const slot = document.createElement('div');
-          slot.className = 'slot';
-          const lbl = document.createElement('div');
-          lbl.className = 'slot-label';
-          lbl.textContent = labels[idx] || 'Session';
-          const time = document.createElement('div');
-          time.className = 'slot-time';
-          time.innerHTML = `${fmt12h(s)}&nbsp;&ndash;&nbsp;${fmt12h(e)}`;
-          if (isToday) {
-            const [sh, sm] = s.split(':').map(Number);
-            const [eh, em] = e.split(':').map(Number);
-            const start = sh * 60 + sm;
-            const end = eh * 60 + em;
-            if (nowMin >= start && nowMin < end) {
-              slot.classList.add('now');
-              const badge = document.createElement('span');
-              badge.className = 'slot-badge';
-              badge.textContent = 'NOW';
-              slot.appendChild(badge);
-            }
-          }
-          slot.appendChild(lbl);
-          slot.appendChild(time);
-          slots.appendChild(slot);
-        });
+      const dayName = document.createElement('span');
+      dayName.className = 'hours-day-name';
+      dayName.textContent = day;
+      dayEl.appendChild(dayName);
+      if (isToday) {
+        const todayBadge = document.createElement('span');
+        todayBadge.className = 'hours-today-badge';
+        todayBadge.textContent = 'Today';
+        dayEl.appendChild(todayBadge);
       }
+      const statusEl = document.createElement('div');
+      statusEl.className = 'hours-status';
+      const statusBadge = document.createElement('span');
+      statusBadge.className = 'hours-status-badge';
+      const timeEl = document.createElement('div');
+      timeEl.className = 'hours-time';
+      if (!sessions) {
+        row.classList.add('closed');
+        statusBadge.classList.add('closed');
+        statusBadge.textContent = isToday ? 'Closed Today' : 'Closed';
+        timeEl.textContent = 'No Lab Hours';
+      } else {
+        timeEl.textContent = formatSessionsForSign(sessions);
+        let isOpenNow = false;
+        let nextStart = null;
+        sessions.forEach(([s, e]) => {
+          const [sh, sm] = s.split(':').map(Number);
+          const [eh, em] = e.split(':').map(Number);
+          const start = sh * 60 + sm;
+          const end = eh * 60 + em;
+          if (nowMin >= start && nowMin < end) isOpenNow = true;
+          if (nowMin < start && !nextStart) nextStart = s;
+        });
+        if (isToday && isOpenNow) {
+          row.classList.add('open-now');
+          statusBadge.classList.add('open-now');
+          statusBadge.textContent = 'Open Now';
+        } else if (isToday && nextStart) {
+          row.classList.add('closed-now');
+          statusBadge.classList.add('closed');
+          statusBadge.textContent = `Opens ${fmt12h(nextStart)}`;
+        } else if (isToday) {
+          row.classList.add('closed');
+          statusBadge.classList.add('closed');
+          statusBadge.textContent = 'Closed Today';
+        } else {
+          statusBadge.classList.add('open');
+          statusBadge.textContent = 'Open';
+        }
+      }
+      statusEl.appendChild(statusBadge);
       row.appendChild(dayEl);
-      row.appendChild(slots);
+      row.appendChild(statusEl);
+      row.appendChild(timeEl);
       hoursList.appendChild(row);
     });
   }
@@ -473,11 +598,14 @@
   function minutesSinceMidnight(d) { return d.getHours() * 60 + d.getMinutes(); }
   function buildHoursSummary() {
     const el = document.getElementById('hours-summary-text');
-    if (!el) return;
+    const summary = document.getElementById('hours-summary');
+    if (!el || !summary) return;
+    summary.classList.remove('open', 'closed');
     const todayName = new Date().toLocaleDateString(undefined, { weekday: 'long' });
-    const sessions = labHours[todayName];
+    const sessions = getDaySessions(todayName);
     if (!sessions) {
-      el.textContent = 'Closed';
+      summary.classList.add('closed');
+      el.textContent = 'Closed Today';
       return;
     }
     const now = new Date();
@@ -493,11 +621,14 @@
       if (nowMin < start && !nextSession) nextSession = { start: s, end: e };
     }
     if (openNow) {
-      el.textContent = `Open now · until ${fmt12h(openNow.end)}`;
+      summary.classList.add('open');
+      el.textContent = `Open Now - Until ${fmt12h(openNow.end)}`;
     } else if (nextSession) {
-      el.innerHTML = `Closed · next ${fmt12h(nextSession.start)}&ndash;${fmt12h(nextSession.end)}`;
+      summary.classList.add('closed');
+      el.textContent = `Closed - Opens ${fmt12h(nextSession.start)}`;
     } else {
-      el.textContent = 'Closed for the rest of the day';
+      summary.classList.add('closed');
+      el.textContent = 'Closed For Today';
     }
   }
   // buildHoursSummary is called after slides load in the init above
@@ -505,7 +636,7 @@
   // Schedule helpers for auto status
   function computeTodayScheduleStatus(now = new Date()) {
     const todayName = now.toLocaleDateString(undefined, { weekday: 'long' });
-    const sessions = labHours[todayName];
+    const sessions = getDaySessions(todayName);
     const nowMin = minutesSinceMidnight(now);
     if (!sessions) return { openNow: false, next: null, until: null };
     let next = null;

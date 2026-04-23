@@ -52,75 +52,136 @@
 
   <!-- Admin Modal -->
   <div id="admin-modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50">
-    <div class="w-full max-w-3xl bg-slate-900 rounded-2xl border border-slate-700 shadow-xl text-left">
+    <div class="w-full max-w-[96vw] xl:max-w-7xl bg-slate-900 rounded-2xl border border-slate-700 shadow-xl text-left max-h-[92vh] overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-700">
         <h3 class="text-xl font-semibold text-white">Vibe Board Controls</h3>
         <button id="admin-close" class="text-slate-300 hover:text-white text-2xl leading-none">&times;</button>
       </div>
-      <div class="px-6 py-5 grid md:grid-cols-2 gap-6">
-        <div>
-          <h4 class="text-cyan-300 font-semibold mb-3">Quick Status</h4>
-          <div class="flex gap-3">
-            <button id="quick-open" class="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">Set OPEN</button>
-            <button id="quick-closed" class="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold">Set CLOSED</button>
+      <div class="px-6 py-5 overflow-y-auto max-h-[calc(92vh-138px)]">
+        <div class="grid xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1.35fr)] gap-6 items-start">
+          <div class="space-y-6">
+            <section class="rounded-2xl border border-slate-700 bg-slate-950/40 p-5">
+              <h4 class="text-cyan-300 font-semibold mb-4">Quick Status</h4>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <button id="quick-open" class="py-4 rounded-full bg-[#50fa7b] hover:brightness-105 text-black text-2xl md:text-3xl font-black tracking-wide shadow-lg">OPEN</button>
+                <button id="quick-closed" class="py-4 rounded-full bg-[#ff5555] hover:brightness-105 text-white text-2xl md:text-3xl font-black tracking-wide shadow-lg">CLOSED</button>
+              </div>
+
+              <h4 class="text-cyan-300 font-semibold mt-6 mb-3">Today</h4>
+              <label class="block text-sm text-slate-300 mb-1">Open Until (manual)</label>
+              <input id="input-close-time" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <label class="inline-flex items-center gap-2 mt-3 text-sm text-slate-300">
+                <input id="toggle-auto-status" type="checkbox" class="accent-cyan-400" checked>
+                Auto status from posted hours
+              </label>
+
+              <label class="block text-sm text-slate-300 mt-5 mb-1">Custom Banner (optional)</label>
+              <input id="input-banner" type="text" placeholder="e.g., Closed for event 1-2 PM" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <label class="inline-flex items-center gap-2 mt-3 text-sm text-slate-300">
+                <input id="toggle-banner" type="checkbox" class="accent-cyan-400"> Show banner
+              </label>
+            </section>
           </div>
 
-          <h4 class="text-cyan-300 font-semibold mt-6 mb-3">Today</h4>
-          <label class="block text-sm text-slate-300 mb-1">Open Until (manual)</label>
-          <input id="input-close-time" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-          <label class="inline-flex items-center gap-2 mt-2 text-sm text-slate-300">
-            <input id="toggle-auto-status" type="checkbox" class="accent-cyan-400" checked>
-            Auto status from posted hours
-          </label>
+          <div class="space-y-6">
+            <section class="rounded-2xl border border-slate-700 bg-slate-950/40 p-5">
+              <h4 class="text-cyan-300 font-semibold mb-3">Board</h4>
+              <label class="block text-sm text-slate-300 mb-1">Title</label>
+              <input id="input-title" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
 
-          <label class="block text-sm text-slate-300 mt-4 mb-1">Custom Banner (optional)</label>
-          <input id="input-banner" type="text" placeholder="e.g., Closed for event 1-2 PM" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-          <label class="inline-flex items-center gap-2 mt-2 text-sm text-slate-300">
-            <input id="toggle-banner" type="checkbox" class="accent-cyan-400"> Show banner
-          </label>
-        </div>
+              <label class="block text-sm text-slate-300 mt-4 mb-1">Subtitle</label>
+              <input id="input-subtitle" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
 
-        <div>
-          <h4 class="text-cyan-300 font-semibold mb-3">Board</h4>
-          <label class="block text-sm text-slate-300 mb-1">Title</label>
-          <input id="input-title" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <label class="block text-sm text-slate-300 mt-4 mb-1">Location Line</label>
+              <input id="input-location" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
 
-          <label class="block text-sm text-slate-300 mt-4 mb-1">Subtitle</label>
-          <input id="input-subtitle" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <label class="block text-sm text-slate-300 mt-4 mb-1">Hero Image URL</label>
+              <input id="input-hero-url" type="text" placeholder="assets/hero/vr-hero.jpg or https://..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
 
-          <label class="block text-sm text-slate-300 mt-4 mb-1">Location Line</label>
-          <input id="input-location" type="text" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <div class="grid sm:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <label class="block text-sm text-slate-300 mb-1">Auto-Refresh (minutes)</label>
+                  <input id="input-refresh" type="number" min="0" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                </div>
+                <div>
+                  <label class="block text-sm text-slate-300 mb-1">Rotate every (seconds)</label>
+                  <input id="input-rotate-seconds" type="number" min="5" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                </div>
+              </div>
 
-          <label class="block text-sm text-slate-300 mt-4 mb-1">Hero Image URL</label>
-          <input id="input-hero-url" type="text" placeholder="assets/hero/vr-hero.jpg or https://..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <h4 class="text-cyan-300 font-semibold mt-6 mb-2">Screen Rotation</h4>
+              <label class="inline-flex items-center gap-2 text-sm text-slate-300">
+                <input id="toggle-rotate" type="checkbox" class="accent-cyan-400"> Auto-rotate screens
+              </label>
 
-          <label class="block text-sm text-slate-300 mt-4 mb-1">Auto-Refresh (minutes)</label>
-          <input id="input-refresh" type="number" min="0" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+              <h4 class="text-cyan-300 font-semibold mt-6 mb-2">Screens to Show</h4>
+              <div class="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-300">
+                <label class="flex items-center gap-2"><input id="show-status" type="checkbox" class="accent-cyan-400" checked> Status</label>
+                <label class="flex items-center gap-2"><input id="show-events" type="checkbox" class="accent-cyan-400" checked> Events</label>
+                <label class="flex items-center gap-2"><input id="show-hours" type="checkbox" class="accent-cyan-400" checked> Hours</label>
+                <label class="flex items-center gap-2"><input id="show-games" type="checkbox" class="accent-cyan-400" checked> Games</label>
+                <label class="flex items-center gap-2"><input id="show-leaderboard" type="checkbox" class="accent-cyan-400" checked> Leaderboard</label>
+                <label class="flex items-center gap-2"><input id="show-promo" type="checkbox" class="accent-cyan-400" checked> Promo</label>
+                <label class="flex items-center gap-2"><input id="show-memes" type="checkbox" class="accent-cyan-400" checked> Memes</label>
+                <label class="flex items-center gap-2"><input id="show-faculty" type="checkbox" class="accent-cyan-400" checked> Faculty</label>
+              </div>
+            </section>
+          </div>
 
-          <h4 class="text-cyan-300 font-semibold mt-6 mb-2">Screen Rotation</h4>
-          <label class="inline-flex items-center gap-2 text-sm text-slate-300">
-            <input id="toggle-rotate" type="checkbox" class="accent-cyan-400"> Auto-rotate screens
-          </label>
-          <label class="block text-sm text-slate-300 mt-2 mb-1">Rotate every (seconds)</label>
-          <input id="input-rotate-seconds" type="number" min="5" step="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-
-          <h4 class="text-cyan-300 font-semibold mt-6 mb-2">Screens to Show</h4>
-          <div class="space-y-2 text-sm text-slate-300">
-            <label class="flex items-center gap-2"><input id="show-status" type="checkbox" class="accent-cyan-400" checked> Status</label>
-            <label class="flex items-center gap-2"><input id="show-events" type="checkbox" class="accent-cyan-400" checked> Events</label>
-            <label class="flex items-center gap-2"><input id="show-hours" type="checkbox" class="accent-cyan-400" checked> Hours</label>
-            <label class="flex items-center gap-2"><input id="show-games" type="checkbox" class="accent-cyan-400" checked> Games</label>
-            <label class="flex items-center gap-2"><input id="show-leaderboard" type="checkbox" class="accent-cyan-400" checked> Leaderboard</label>
-
-            <label class="flex items-center gap-2"><input id="show-promo" type="checkbox" class="accent-cyan-400" checked> Promo</label>
-            <label class="flex items-center gap-2"><input id="show-memes" type="checkbox" class="accent-cyan-400" checked> Memes</label>
-            <label class="flex items-center gap-2"><input id="show-faculty" type="checkbox" class="accent-cyan-400" checked> Faculty</label>
-
+          <div class="space-y-6">
+            <section class="rounded-2xl border border-slate-700 bg-slate-950/40 p-5">
+              <div class="flex items-start justify-between gap-4 mb-3">
+                <div>
+                  <h4 class="text-cyan-300 font-semibold">Posted Hours</h4>
+                  <p class="text-sm text-slate-400 mt-1">Update hours here, or change the defaults in <code class="text-slate-200">app.js</code>. Resetting defaults restores the code values.</p>
+                </div>
+              </div>
+              <div class="rounded-2xl border border-slate-700 overflow-hidden">
+                <div class="hidden md:grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-800/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+              <div>Day</div>
+              <div>Status</div>
+              <div>Open</div>
+              <div>Close</div>
+                </div>
+                <div class="space-y-px bg-slate-700">
+                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
+                <div class="text-white font-medium">Monday</div>
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-monday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
+                <input id="hours-monday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                <input id="hours-monday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                  </div>
+                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
+                <div class="text-white font-medium">Tuesday</div>
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-tuesday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
+                <input id="hours-tuesday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                <input id="hours-tuesday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                  </div>
+                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
+                <div class="text-white font-medium">Wednesday</div>
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-wednesday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
+                <input id="hours-wednesday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                <input id="hours-wednesday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                  </div>
+                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
+                <div class="text-white font-medium">Thursday</div>
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-thursday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
+                <input id="hours-thursday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                <input id="hours-thursday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                  </div>
+                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
+                <div class="text-white font-medium">Friday</div>
+                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-friday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
+                <input id="hours-friday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                <input id="hours-friday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
 
-      <div class="px-6 pb-6 flex items-center justify-between">
+      <div class="px-6 py-4 border-t border-slate-700 flex items-center justify-between bg-slate-900">
         <button id="reset-defaults" class="text-slate-300 hover:text-white">Reset to defaults</button>
         <div class="flex gap-3">
           <button id="cancel-admin" class="px-4 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white">Cancel</button>

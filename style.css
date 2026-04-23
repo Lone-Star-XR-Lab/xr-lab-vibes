@@ -24,31 +24,188 @@ section[data-slide] { overflow: hidden; }
   .faculty-footer > * { width: calc(50% - clamp(10px, 2vw, 24px)); }
 }
 
-/* Hours - readability */
-.hours-list { display: grid; grid-auto-rows: 1fr; gap: 14px; }
-.hours-summary { display:flex; align-items:center; justify-content:space-between; gap:14px; background: rgba(15,23,42,0.7); border:1px solid rgba(71,85,105,0.7); padding: 16px 20px; border-radius: 16px; margin-bottom: 12px; }
-.hours-summary .label { color:#67e8f9; font-weight:700; }
-.hours-summary .value { color:#e5e7eb; font-weight:800; font-size:1.5rem; }
-.hours-row { display: grid; grid-template-columns: 200px 1fr; align-items: stretch; gap: 16px; padding: 18px 20px; border-radius: 16px; border:1px solid rgba(71, 85, 105, 0.5); background: rgba(2, 6, 23, 0.35); }
-.hours-row.today { background: rgba(2, 8, 23, 0.5); border-color: rgba(139, 233, 253, 0.55); box-shadow: 0 0 0 2px rgba(139, 233, 253, 0.20) inset; }
-.hours-row.closed { background: var(--drac-red-10); border-color: var(--drac-red-40); }
-/* De-emphasize closed rows */
-.hours-row.closed .hours-day { color: #ffd7d7; }
-.hours-row.closed .slot { opacity: 0.6; }
-.hours-row.closed .slot-label, .hours-row.closed .slot-time { opacity: 0.8; }
-/* Improve contrast for open rows */
-.hours-row:not(.closed) .slot { border-color: rgba(139, 233, 253, 0.35); }
-.hours-row:not(.closed) .slot-time { color: #ffffff; }
-.hours-day { font-weight: 800; color: #fff; font-size:1.5rem; letter-spacing:0.2px; }
-.hours-slots { display: grid; grid-template-columns: 1fr; grid-auto-rows: 1fr; gap: 12px; }
-/* Center the CLOSED badge within closed rows */
-.hours-row.closed .hours-slots { display: flex; align-items: center; justify-content: center; height: 100%; }
-.slot { display: flex; align-items: center; gap: 14px; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(71, 85, 105, 0.7); padding: 16px 18px; border-radius: 12px; height: 100%; }
-.slot.now { border-color: var(--drac-green); box-shadow: 0 0 0 2px rgba(80, 250, 123, 0.22) inset; }
-.slot-label { font-size: 1.1rem; color: #67e8f9; font-weight: 800; min-width: 120px; }
-.slot-time { font-size: 1.6rem; color: #e5e7eb; font-weight: 800; letter-spacing: 0.2px; }
-.slot-badge { margin-left: auto; font-size: 0.75rem; color:#0d1b12; background: var(--drac-green); border:1px solid #28d86a; padding:3px 8px; border-radius:9999px; font-weight:800; }
-.badge-closed { display: flex; align-items: center; justify-content: center; background: #ff5555; color: #ffffff; border: 1px solid #ff5555; padding: 14px 22px; border-radius: 9999px; font-weight: 800; font-size: 1.75rem; letter-spacing: 0.4px; line-height: 1; }
+/* Hours - posted sign layout */
+.hours-board {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  background:
+    radial-gradient(circle at top, rgba(139, 233, 253, 0.12), rgba(40, 42, 54, 0) 38%),
+    linear-gradient(180deg, rgba(68, 71, 90, 0.22), rgba(40, 42, 54, 0.96));
+  border: 1px solid rgba(98, 114, 164, 0.55);
+  border-radius: 24px;
+  padding: 22px;
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.34);
+}
+.hours-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: linear-gradient(135deg, rgba(68, 71, 90, 0.85), rgba(40, 42, 54, 0.98));
+  border: 1px solid rgba(98, 114, 164, 0.5);
+  padding: 18px 22px;
+  border-radius: 18px;
+}
+.hours-summary.open {
+  background: linear-gradient(135deg, rgba(80, 250, 123, 0.98), rgba(64, 237, 114, 0.96));
+  border-color: rgba(80, 250, 123, 0.95);
+}
+.hours-summary.closed {
+  background: linear-gradient(135deg, rgba(255, 85, 85, 0.98), rgba(255, 106, 106, 0.96));
+  border-color: rgba(255, 110, 110, 0.95);
+}
+.hours-summary .label {
+  color: var(--drac-cyan);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.95rem;
+}
+.hours-summary .value {
+  color: var(--drac-foreground);
+  font-weight: 900;
+  font-size: 1.95rem;
+  text-transform: uppercase;
+  text-align: right;
+}
+.hours-summary.open .label,
+.hours-summary.open .value {
+  color: #09150c;
+}
+.hours-summary.closed .label,
+.hours-summary.closed .value {
+  color: #ffffff;
+}
+.hours-heading {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.05fr) minmax(180px, 0.9fr) minmax(280px, 1.5fr);
+  gap: 16px;
+  padding: 0 12px;
+  color: var(--drac-comment);
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  text-align: left;
+}
+.hours-list {
+  display: grid;
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  min-height: 0;
+}
+.hours-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.05fr) minmax(180px, 0.9fr) minmax(280px, 1.5fr);
+  align-items: center;
+  gap: 18px;
+  min-height: 0;
+  height: 100%;
+  padding: 20px 22px;
+  border-radius: 20px;
+  border: 1px solid rgba(68, 71, 90, 0.95);
+  background: rgba(40, 42, 54, 0.92);
+}
+.hours-row.today {
+  background: linear-gradient(135deg, rgba(189, 147, 249, 0.16), rgba(40, 42, 54, 0.98));
+  border-color: rgba(189, 147, 249, 0.48);
+  box-shadow: 0 0 0 2px rgba(189, 147, 249, 0.12) inset;
+}
+.hours-row.closed {
+  background: linear-gradient(135deg, rgba(255, 85, 85, 0.12), rgba(40, 42, 54, 0.92));
+  border-color: rgba(255, 85, 85, 0.34);
+}
+.hours-row.closed.today,
+.hours-row.closed-now {
+  background: linear-gradient(135deg, rgba(255, 85, 85, 0.24), rgba(40, 42, 54, 0.94));
+  border-color: rgba(255, 85, 85, 0.52);
+  box-shadow: 0 0 0 2px rgba(255, 85, 85, 0.12) inset;
+}
+.hours-row.open-now {
+  border-color: rgba(80, 250, 123, 0.52);
+  box-shadow: 0 0 0 2px rgba(80, 250, 123, 0.12) inset;
+}
+.hours-day {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 900;
+  color: var(--drac-foreground);
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+}
+.hours-day-name {
+  display: inline-block;
+}
+.hours-status {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.hours-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 168px;
+  padding: 12px 18px;
+  border-radius: 9999px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.hours-status-badge.open {
+  background: var(--drac-green);
+  border: 2px solid rgba(80, 250, 123, 0.95);
+  color: #09150c;
+  box-shadow: 0 10px 24px rgba(80, 250, 123, 0.15);
+}
+.hours-status-badge.open-now {
+  background: var(--drac-green);
+  border: 2px solid rgba(80, 250, 123, 0.98);
+  color: #09150c;
+  box-shadow: 0 10px 24px rgba(80, 250, 123, 0.18);
+}
+.hours-status-badge.closed {
+  background: var(--drac-red);
+  border: 2px solid rgba(255, 110, 110, 0.98);
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(255, 85, 85, 0.16);
+}
+.hours-time {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 2.15rem;
+  color: var(--drac-foreground);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+.hours-row.closed .hours-time {
+  color: #e7d6d6;
+}
+.hours-today-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+.hours-today-badge {
+  padding: 6px 12px;
+  background: rgba(189, 147, 249, 0.18);
+  border: 1px solid rgba(189, 147, 249, 0.42);
+  color: var(--drac-purple);
+}
 .hours-note { margin-top: 8px; color:#cbd5e1; font-size:0.95rem; }
 
 /* Games grid */
@@ -142,15 +299,17 @@ section[data-slide] { overflow: hidden; }
   #kiosk-line { min-height: 120px; font-size: clamp(1.5rem, 5.5vh, 2.25rem) !important; }
 
   /* Hours slide */
-  .hours-summary { padding: 10px 12px; }
-  .hours-summary .value { font-size: 1.25rem; }
-  .hours-list { gap: 10px; grid-auto-rows: min-content; }
-  .hours-row { grid-template-columns: 160px 1fr; padding: 12px 14px; }
-  .hours-day { font-size: 1.2rem; }
-  .hours-slots { gap: 8px; }
-  .slot { padding: 10px 12px; }
-  .slot-label { font-size: 0.95rem; min-width: 100px; }
-  .slot-time { font-size: 1.3rem; }
+  .hours-board { padding: 14px; gap: 10px; }
+  .hours-summary { padding: 12px 14px; }
+  .hours-summary .label { font-size: 0.8rem; }
+  .hours-summary .value { font-size: 1.35rem; }
+  .hours-heading { grid-template-columns: minmax(150px, 1fr) minmax(150px, 0.9fr) minmax(220px, 1.35fr); padding: 0 8px; font-size: 0.76rem; }
+  .hours-list { gap: 8px; grid-template-rows: repeat(5, minmax(0, 1fr)); }
+  .hours-row { grid-template-columns: minmax(150px, 1fr) minmax(150px, 0.9fr) minmax(220px, 1.35fr); padding: 14px 16px; }
+  .hours-day { font-size: 1.35rem; gap: 8px; }
+  .hours-time { font-size: 1.5rem; }
+  .hours-status-badge { min-width: 132px; padding: 9px 12px; font-size: 0.78rem; }
+  .hours-today-badge { font-size: 0.68rem; }
   /* No scroll: scale down instead */
   section[data-slide="hours"] #hours-list { overflow: hidden; }
 
@@ -166,9 +325,15 @@ section[data-slide] { overflow: hidden; }
   .hero-img { max-height: 22vh; }
   .status-grid { gap: 10px !important; }
   #kiosk-line { min-height: 100px; font-size: clamp(1.25rem, 5vh, 2rem) !important; }
+  .hours-board { padding: 10px; }
   .hours-summary { padding: 8px 10px; }
-  .hours-row { grid-template-columns: 150px 1fr; padding: 10px 12px; }
-  .slot-time { font-size: 1.15rem; }
+  .hours-summary .label { font-size: 0.72rem; }
+  .hours-summary .value { font-size: 1.1rem; }
+  .hours-heading { grid-template-columns: minmax(120px, 1fr) minmax(128px, 0.9fr) minmax(170px, 1.25fr); font-size: 0.68rem; }
+  .hours-row { grid-template-columns: minmax(120px, 1fr) minmax(128px, 0.9fr) minmax(170px, 1.25fr); padding: 10px 12px; }
+  .hours-day { font-size: 1.12rem; }
+  .hours-time { font-size: 1.15rem; }
+  .hours-status-badge { min-width: 108px; padding: 7px 10px; font-size: 0.66rem; }
   section[data-slide^="faculty"] img { max-height: 38vh; }
   section[data-slide^="faculty"] > .text-center { margin-bottom: 0.5rem !important; }
   section[data-slide^="faculty"] h2.drac-title { font-size: clamp(1.9rem, 5.2vh, 2.8rem) !important; }
@@ -200,15 +365,16 @@ section[data-slide] { overflow: hidden; }
   #kiosk-line { min-height: 96px !important; font-size: clamp(1.5rem, 4.6vh, 2.2rem) !important; }
 
   /* Hours slide */
-  .hours-summary { padding: 10px 12px !important; }
-  .hours-summary .value { font-size: 1.25rem !important; }
-  .hours-list { gap: 8px !important; grid-auto-rows: min-content !important; }
-  .hours-row { grid-template-columns: 150px 1fr !important; padding: 10px 12px !important; border-radius: 12px !important; }
-  .hours-day { font-size: 1.2rem !important; }
-  .hours-slots { gap: 8px !important; }
-  .slot { padding: 10px 12px !important; }
-  .slot-label { font-size: 0.95rem !important; min-width: 100px !important; }
-  .slot-time { font-size: 1.3rem !important; }
+  .hours-board { padding: 14px !important; gap: 10px !important; }
+  .hours-summary { padding: 12px 14px !important; }
+  .hours-summary .label { font-size: 0.8rem !important; }
+  .hours-summary .value { font-size: 1.35rem !important; }
+  .hours-heading { grid-template-columns: minmax(140px, 1fr) minmax(140px, 0.9fr) minmax(210px, 1.3fr) !important; padding: 0 8px !important; font-size: 0.76rem !important; }
+  .hours-list { gap: 8px !important; grid-template-rows: repeat(5, minmax(0, 1fr)) !important; }
+  .hours-row { grid-template-columns: minmax(140px, 1fr) minmax(140px, 0.9fr) minmax(210px, 1.3fr) !important; padding: 12px 14px !important; border-radius: 12px !important; }
+  .hours-day { font-size: 1.28rem !important; gap: 8px !important; }
+  .hours-time { font-size: 1.38rem !important; }
+  .hours-status-badge { min-width: 124px !important; padding: 8px 12px !important; font-size: 0.74rem !important; }
 
   /* Faculty slides */
   section[data-slide^="faculty"] img { max-height: 34vh !important; }
