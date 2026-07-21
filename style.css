@@ -13,10 +13,10 @@ body { background: radial-gradient(100% 120% at 0% 0%, #2b2d3a 0%, #1d1e26 60%, 
 /* Ensure each slide clips its contents to the rounded panel */
 section[data-slide] { overflow: hidden; }
 .xr-brand { color: var(--drac-red); }
-.faculty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: clamp(14px, 2vw, 28px); align-items: stretch; flex: 1; width: 100%; }
+.faculty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: clamp(14px, 2vw, 28px); align-items: stretch; flex: 1; min-height: 0; width: 100%; }
 .faculty-grid > * { height: 100%; }
-.faculty-content { display: flex; flex-direction: column; gap: clamp(12px, 2vw, 20px); height: 100%; }
-.faculty-footer { position: absolute; left: 50%; bottom: clamp(6px, 1.8vh, 18px); transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(98%, 1100px); padding: 0 clamp(12px, 3vw, 40px); box-sizing: border-box; }
+.faculty-content { display: flex; flex-direction: column; justify-content: safe center; gap: clamp(20px, 3vw, 32px); height: 100%; }
+.faculty-footer { flex-shrink: 0; margin: clamp(6px, 1.8vh, 18px) auto 0; display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(98%, 1100px); padding: 0 clamp(12px, 3vw, 40px); box-sizing: border-box; }
 .faculty-footer > * { width: 100%; }
 .faculty-footer .drac-card, .faculty-footer .drac-callout { padding: clamp(10px, 2vw, 18px); }
 @media (min-width: 768px) {
@@ -39,44 +39,41 @@ section[data-slide] { overflow: hidden; }
   box-shadow: 0 22px 50px rgba(0, 0, 0, 0.34);
 }
 .hours-summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  background: linear-gradient(135deg, rgba(68, 71, 90, 0.85), rgba(40, 42, 54, 0.98));
-  border: 1px solid rgba(98, 114, 164, 0.5);
-  padding: 18px 22px;
+  text-align: center;
+  background: radial-gradient(120% 160% at 50% 0%, rgba(80, 250, 123, 0.14), rgba(40, 42, 54, 0) 65%);
+  border: 1px solid rgba(80, 250, 123, 0.35);
+  padding: 22px 22px 24px;
   border-radius: 18px;
 }
-.hours-summary.open {
-  background: linear-gradient(135deg, rgba(80, 250, 123, 0.98), rgba(64, 237, 114, 0.96));
-  border-color: rgba(80, 250, 123, 0.95);
-}
 .hours-summary.closed {
-  background: linear-gradient(135deg, rgba(255, 85, 85, 0.98), rgba(255, 106, 106, 0.96));
-  border-color: rgba(255, 110, 110, 0.95);
+  background: radial-gradient(120% 160% at 50% 0%, rgba(255, 85, 85, 0.14), rgba(40, 42, 54, 0) 65%);
+  border-color: rgba(255, 85, 85, 0.35);
 }
-.hours-summary .label {
-  color: var(--drac-cyan);
+.hours-summary .kicker {
+  color: var(--drac-comment);
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.3em;
   font-size: 0.95rem;
 }
-.hours-summary .value {
-  color: var(--drac-foreground);
+.hours-summary .word {
+  margin-top: 6px;
   font-weight: 900;
-  font-size: 1.95rem;
+  line-height: 1;
+  color: var(--drac-green);
+  text-shadow: 0 0 24px rgba(80, 250, 123, 0.55), 0 0 60px rgba(80, 250, 123, 0.25);
+  font-size: 5.5rem;
   text-transform: uppercase;
-  text-align: right;
 }
-.hours-summary.open .label,
-.hours-summary.open .value {
-  color: #09150c;
+.hours-summary.closed .word {
+  color: var(--drac-red);
+  text-shadow: 0 0 24px rgba(255, 85, 85, 0.55), 0 0 60px rgba(255, 85, 85, 0.25);
 }
-.hours-summary.closed .label,
-.hours-summary.closed .value {
-  color: #ffffff;
+.hours-summary .sub {
+  margin-top: 8px;
+  font-weight: 700;
+  color: var(--drac-foreground);
+  font-size: 1.6rem;
 }
 .hours-heading {
   display: grid;
@@ -133,7 +130,7 @@ section[data-slide] { overflow: hidden; }
   gap: 12px;
   font-weight: 900;
   color: var(--drac-foreground);
-  font-size: 2rem;
+  font-size: 2.35rem;
   letter-spacing: 0.02em;
 }
 .hours-day-name {
@@ -148,10 +145,10 @@ section[data-slide] { overflow: hidden; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 168px;
-  padding: 12px 18px;
+  min-width: 180px;
+  padding: 13px 20px;
   border-radius: 9999px;
-  font-size: 1.05rem;
+  font-size: 1.15rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -179,7 +176,7 @@ section[data-slide] { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  font-size: 2.15rem;
+  font-size: 2.5rem;
   color: var(--drac-foreground);
   font-weight: 800;
   letter-spacing: 0.01em;
@@ -546,8 +543,8 @@ section[data-slide] { overflow: hidden; }
 .drac-bar { height: 6px; width: 12rem; background: linear-gradient(90deg, var(--drac-pink), var(--drac-cyan)); border-radius: 9999px; box-shadow: 0 0 14px rgba(255,121,198,0.25), 0 0 10px rgba(139,233,253,0.18); }
 
 /* Dracula status colors (Open/Closed) */
-.drac-open-text { color: var(--drac-green) !important; }
-.drac-closed-text { color: var(--drac-red) !important; }
+.drac-open-text { color: var(--drac-green) !important; text-shadow: 0 0 22px rgba(80,250,123,0.55), 0 0 55px rgba(80,250,123,0.25); }
+.drac-closed-text { color: var(--drac-red) !important; text-shadow: 0 0 22px rgba(255,85,85,0.55), 0 0 55px rgba(255,85,85,0.25); }
 .drac-ring-open { background: #50fa7b; box-shadow: 0 0 0 0 rgba(0,0,0,0); }
 .drac-ring-closed { background: #ff5555; box-shadow: 0 0 0 0 rgba(0,0,0,0); }
 
@@ -555,9 +552,37 @@ section[data-slide] { overflow: hidden; }
 .status-grid { grid-auto-rows: 1fr; }
 .status-card, .status-kiosk { min-height: 0 !important; height: 100% !important; }
 
-/* Status pill styles */
-.status-pill-open { background: #50fa7b; color: #0b1c12; border: 1px solid #2de86d; }
-.status-pill-closed { background: #ff5555; color: #ffffff; border: 1px solid #ff6e6e; }
+/* Status hero card: a glow wash instead of a solid fill, consistent with the Hours slide */
+.status-pill-open {
+  background: radial-gradient(120% 220% at 50% 0%, rgba(80,250,123,0.14), rgba(40,42,54,0) 68%);
+  border: 1px solid rgba(80,250,123,0.38);
+}
+.status-pill-closed {
+  background: radial-gradient(120% 220% at 50% 0%, rgba(255,85,85,0.14), rgba(40,42,54,0) 68%);
+  border: 1px solid rgba(255,85,85,0.38);
+}
+
+/* Hero photo frame, matching the glow border used on the faculty slides' images */
+.hero-photo-frame {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 0.75rem;
+  border-radius: 22px;
+  padding: clamp(6px, 1vw, 12px);
+  background: radial-gradient(120% 160% at 50% 0%, rgba(139,233,253,0.12), rgba(40,42,54,0) 70%);
+  border: 1px solid rgba(139,233,253,0.22);
+  box-shadow: 0 0 26px rgba(139,233,253,0.12);
+}
+
+/* Kiosk check-in line: a standout call to action, not just another stat card */
+#kiosk-line {
+  background: rgba(139,233,253,0.08);
+  border: 1px solid rgba(139,233,253,0.4);
+  border-left: 3px solid var(--drac-cyan);
+  color: var(--drac-cyan);
+  text-shadow: 0 0 10px rgba(139,233,253,0.35);
+}
+.kiosk-icon { width: 1em; height: 1em; flex-shrink: 0; }
 
 /* Responsive safeguards for smaller landscape viewports (no scroll) */
 @media (orientation: landscape) and (max-height: 820px) {
@@ -566,6 +591,7 @@ section[data-slide] { overflow: hidden; }
   #status-hero #hero-status { font-size: clamp(2.75rem, 9vh, 5.5rem) !important; }
   #status-hero #welcome-line { font-size: clamp(1.25rem, 2.8vh, 1.75rem) !important; }
   .hero-img { max-height: 28vh; }
+  .hero-photo-frame { padding: 4px; margin-bottom: 0.4rem; }
   .status-grid { gap: 12px !important; }
   .status-card { padding: 10px !important; }
   #hero-time { font-size: clamp(2rem, 7vh, 3.25rem) !important; }
@@ -576,16 +602,17 @@ section[data-slide] { overflow: hidden; }
 
   /* Hours slide */
   .hours-board { padding: 14px; gap: 10px; }
-  .hours-summary { padding: 12px 14px; }
-  .hours-summary .label { font-size: 0.8rem; }
-  .hours-summary .value { font-size: 1.35rem; }
+  .hours-summary { padding: 14px 14px 16px; }
+  .hours-summary .kicker { font-size: 0.85rem; }
+  .hours-summary .word { font-size: 3.6rem; }
+  .hours-summary .sub { font-size: 1.3rem; }
   .hours-heading { grid-template-columns: minmax(150px, 1fr) minmax(150px, 0.9fr) minmax(220px, 1.35fr); padding: 0 8px; font-size: 0.76rem; }
   .hours-list { gap: 8px; grid-template-rows: repeat(5, minmax(0, 1fr)); }
   .hours-row { grid-template-columns: minmax(150px, 1fr) minmax(150px, 0.9fr) minmax(220px, 1.35fr); padding: 14px 16px; }
-  .hours-day { font-size: 1.35rem; gap: 8px; }
-  .hours-time { font-size: 1.5rem; }
-  .hours-status-badge { min-width: 132px; padding: 9px 12px; font-size: 0.78rem; }
-  .hours-today-badge { font-size: 0.68rem; }
+  .hours-day { font-size: 1.55rem; gap: 8px; }
+  .hours-time { font-size: 1.7rem; }
+  .hours-status-badge { min-width: 145px; padding: 10px 14px; font-size: 0.85rem; }
+  .hours-today-badge { font-size: 0.7rem; }
   /* No scroll: scale down instead */
   section[data-slide="hours"] #hours-list { overflow: hidden; }
 
@@ -595,28 +622,6 @@ section[data-slide] { overflow: hidden; }
 }
 
 /* Extra-tight landscape layout for very short screens */
-@media (orientation: landscape) and (max-height: 700px) {
-  #status-hero #hero-status { font-size: clamp(2.25rem, 8vh, 4.5rem) !important; }
-  #status-hero #welcome-line { font-size: clamp(1.1rem, 2.6vh, 1.5rem) !important; }
-  .hero-img { max-height: 22vh; }
-  .status-grid { gap: 10px !important; }
-  #kiosk-line { min-height: 100px; font-size: clamp(1.25rem, 5vh, 2rem) !important; }
-  .hours-board { padding: 10px; }
-  .hours-summary { padding: 8px 10px; }
-  .hours-summary .label { font-size: 0.72rem; }
-  .hours-summary .value { font-size: 1.1rem; }
-  .hours-heading { grid-template-columns: minmax(120px, 1fr) minmax(128px, 0.9fr) minmax(170px, 1.25fr); font-size: 0.68rem; }
-  .hours-row { grid-template-columns: minmax(120px, 1fr) minmax(128px, 0.9fr) minmax(170px, 1.25fr); padding: 10px 12px; }
-  .hours-day { font-size: 1.12rem; }
-  .hours-time { font-size: 1.15rem; }
-  .hours-status-badge { min-width: 108px; padding: 7px 10px; font-size: 0.66rem; }
-  section[data-slide^="faculty"] img { max-height: 38vh; }
-  section[data-slide^="faculty"] > .text-center { margin-bottom: 0.5rem !important; }
-  section[data-slide^="faculty"] h2.drac-title { font-size: clamp(1.9rem, 5.2vh, 2.8rem) !important; }
-  section[data-slide^="faculty"] p, section[data-slide^="faculty"] li { font-size: clamp(0.9rem, 1.8vh, 1.1rem) !important; }
-  img[alt^="QR code"] { width: 120px !important; height: 120px !important; }
-}
-
 /* Portrait: show rotate overlay, hide slides (landscape-only experience) */
 @media (orientation: portrait) {
   #rotate-overlay { display: flex; }
@@ -632,6 +637,7 @@ section[data-slide] { overflow: hidden; }
   #status-hero #hero-status { font-size: clamp(3rem, 8.5vh, 6.2rem) !important; }
   #status-hero #welcome-line { font-size: clamp(1.2rem, 2.6vh, 1.8rem) !important; }
   .hero-img { max-height: 24vh !important; display: block !important; }
+  .hero-photo-frame { padding: 4px !important; margin-bottom: 0.4rem !important; }
   .status-grid { gap: 10px !important; }
   .status-card { padding: 10px !important; }
   #hero-time { font-size: clamp(2.25rem, 6.5vh, 3.5rem) !important; }
@@ -642,15 +648,16 @@ section[data-slide] { overflow: hidden; }
 
   /* Hours slide */
   .hours-board { padding: 14px !important; gap: 10px !important; }
-  .hours-summary { padding: 12px 14px !important; }
-  .hours-summary .label { font-size: 0.8rem !important; }
-  .hours-summary .value { font-size: 1.35rem !important; }
+  .hours-summary { padding: 14px 14px 16px !important; }
+  .hours-summary .kicker { font-size: 0.85rem !important; }
+  .hours-summary .word { font-size: 3.6rem !important; }
+  .hours-summary .sub { font-size: 1.3rem !important; }
   .hours-heading { grid-template-columns: minmax(140px, 1fr) minmax(140px, 0.9fr) minmax(210px, 1.3fr) !important; padding: 0 8px !important; font-size: 0.76rem !important; }
   .hours-list { gap: 8px !important; grid-template-rows: repeat(5, minmax(0, 1fr)) !important; }
   .hours-row { grid-template-columns: minmax(140px, 1fr) minmax(140px, 0.9fr) minmax(210px, 1.3fr) !important; padding: 12px 14px !important; border-radius: 12px !important; }
-  .hours-day { font-size: 1.28rem !important; gap: 8px !important; }
-  .hours-time { font-size: 1.38rem !important; }
-  .hours-status-badge { min-width: 124px !important; padding: 8px 12px !important; font-size: 0.74rem !important; }
+  .hours-day { font-size: 1.5rem !important; gap: 8px !important; }
+  .hours-time { font-size: 1.62rem !important; }
+  .hours-status-badge { min-width: 140px !important; padding: 9px 13px !important; font-size: 0.82rem !important; }
 
   /* Faculty slides */
   section[data-slide^="faculty"] img { max-height: 34vh !important; }
@@ -661,6 +668,32 @@ section[data-slide] { overflow: hidden; }
   section[data-slide^="faculty"] .grid { gap: 10px !important; }
   section[data-slide^="faculty"] p, section[data-slide^="faculty"] li { font-size: clamp(0.95rem, 2vh, 1.2rem) !important; }
   img[alt^="QR code"] { width: 140px !important; height: 140px !important; }
+}
+
+/* Extra-tight landscape layout for very short screens (must come after the
+   1080px tier above so its !important rules take precedence there too) */
+@media (orientation: landscape) and (max-height: 700px) {
+  #status-hero #hero-status { font-size: clamp(2.25rem, 8vh, 4.5rem) !important; }
+  #status-hero #welcome-line { font-size: clamp(1.1rem, 2.6vh, 1.5rem) !important; }
+  .hero-img { max-height: 22vh !important; }
+  .hero-photo-frame { padding: 3px !important; margin-bottom: 0.3rem !important; }
+  .status-grid { gap: 10px !important; }
+  #kiosk-line { min-height: 100px !important; font-size: clamp(1.25rem, 5vh, 2rem) !important; }
+  .hours-board { padding: 10px !important; }
+  .hours-summary { padding: 10px 10px 12px !important; }
+  .hours-summary .kicker { font-size: 0.75rem !important; }
+  .hours-summary .word { font-size: 2.8rem !important; }
+  .hours-summary .sub { font-size: 1.05rem !important; }
+  .hours-heading { grid-template-columns: minmax(120px, 1fr) minmax(128px, 0.9fr) minmax(170px, 1.25fr) !important; font-size: 0.68rem !important; }
+  .hours-row { grid-template-columns: minmax(120px, 1fr) minmax(128px, 0.9fr) minmax(170px, 1.25fr) !important; padding: 10px 12px !important; }
+  .hours-day { font-size: 1.3rem !important; }
+  .hours-time { font-size: 1.4rem !important; }
+  .hours-status-badge { min-width: 118px !important; padding: 8px 11px !important; font-size: 0.72rem !important; }
+  section[data-slide^="faculty"] img { max-height: 38vh !important; }
+  section[data-slide^="faculty"] > .text-center { margin-bottom: 0.5rem !important; }
+  section[data-slide^="faculty"] h2.drac-title { font-size: clamp(1.9rem, 5.2vh, 2.8rem) !important; }
+  section[data-slide^="faculty"] p, section[data-slide^="faculty"] li { font-size: clamp(0.9rem, 1.8vh, 1.1rem) !important; }
+  img[alt^="QR code"] { width: 120px !important; height: 120px !important; }
 }
 
 /* Consistent media frame for slide images */

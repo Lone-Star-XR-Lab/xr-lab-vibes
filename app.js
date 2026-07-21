@@ -1103,15 +1103,17 @@
   // Hours summary (Today)
   function minutesSinceMidnight(d) { return d.getHours() * 60 + d.getMinutes(); }
   function buildHoursSummary() {
-    const el = document.getElementById('hours-summary-text');
+    const wordEl = document.getElementById('hours-summary-word');
+    const subEl = document.getElementById('hours-summary-sub');
     const summary = document.getElementById('hours-summary');
-    if (!el || !summary) return;
-    summary.classList.remove('open', 'closed');
+    if (!wordEl || !subEl || !summary) return;
+    summary.classList.remove('closed');
     const todayName = new Date().toLocaleDateString(undefined, { weekday: 'long' });
     const sessions = getDaySessions(todayName);
     if (!sessions) {
       summary.classList.add('closed');
-      el.textContent = 'Closed Today';
+      wordEl.textContent = 'Closed';
+      subEl.textContent = 'No lab hours today';
       return;
     }
     const now = new Date();
@@ -1127,14 +1129,16 @@
       if (nowMin < start && !nextSession) nextSession = { start: s, end: e };
     }
     if (openNow) {
-      summary.classList.add('open');
-      el.textContent = `Open Now - Until ${fmt12h(openNow.end)}`;
+      wordEl.textContent = 'Open';
+      subEl.textContent = `Until ${fmt12h(openNow.end)} today`;
     } else if (nextSession) {
       summary.classList.add('closed');
-      el.textContent = `Closed - Opens ${fmt12h(nextSession.start)}`;
+      wordEl.textContent = 'Closed';
+      subEl.textContent = `Opens ${fmt12h(nextSession.start)} today`;
     } else {
       summary.classList.add('closed');
-      el.textContent = 'Closed For Today';
+      wordEl.textContent = 'Closed';
+      subEl.textContent = 'No more sessions today';
     }
   }
   // buildHoursSummary is called after slides load in the init above
@@ -1160,32 +1164,23 @@
   function setHeroStatus(open) {
     const hero = document.getElementById('hero-status');
     const heroBox = document.getElementById('status-hero');
-    const pill = document.getElementById('status-pill');
     const welcome = document.getElementById('welcome-line');
     const kiosk = document.getElementById('kiosk-line');
+    const kioskText = document.getElementById('kiosk-text');
     if (hero) {
       hero.textContent = open ? 'OPEN' : 'CLOSED';
-      hero.classList.remove('drac-open-text', 'drac-closed-text', 'text-white', 'text-black');
-      if (open) {
-        hero.classList.add('text-black');
-      } else {
-        hero.classList.add('text-white');
-      }
+      hero.classList.remove('drac-open-text', 'drac-closed-text');
+      hero.classList.add(open ? 'drac-open-text' : 'drac-closed-text');
     }
-    if (pill) {
-      pill.classList.toggle('status-pill-open', open);
-      pill.classList.toggle('status-pill-closed', !open);
+    if (heroBox) {
+      heroBox.classList.toggle('status-pill-open', open);
+      heroBox.classList.toggle('status-pill-closed', !open);
     }
     if (welcome) welcome.textContent = open ? "Open to all students — come on in, y'all!" : 'We\u2019re closed right now';
-    if (kiosk) {
-      if (open) {
-        kiosk.classList.remove('hidden');
-        kiosk.textContent = 'Please check in at the kiosk inside';
-      } else {
-        // Show a helpful note when closed; hide entirely if you prefer
-        kiosk.classList.remove('hidden');
-        kiosk.textContent = 'Closed now — please visit during posted hours';
-      }
+    if (kiosk) kiosk.classList.remove('hidden');
+    if (kioskText) {
+      // Show a helpful note when closed; hide entirely if you prefer
+      kioskText.textContent = open ? 'Please check in at the kiosk inside' : 'Closed now — please visit during posted hours';
     }
   }
 

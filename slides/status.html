@@ -1,14 +1,14 @@
 <section data-slide="status" class="bg-slate-800/70 p-6 rounded-2xl shadow-lg h-full flex flex-col">
-  <img id="hero-photo" src="assets/hero/hero-image.jpg" data-fallback="assets/hero/vr-headset.svg" alt="Students using VR in the lab" class="hero-img hidden sm:block rounded-xl object-cover mx-auto mb-3" />
-  <div id="status-hero" class="relative mb-3 rounded-3xl bg-slate-900/60 border border-slate-700 px-10 py-7">
+  <div class="hero-photo-frame hidden sm:block">
+    <img id="hero-photo" src="assets/hero/hero-image.jpg" data-fallback="assets/hero/vr-headset.svg" alt="Students using VR in the lab" class="hero-img rounded-xl object-cover mx-auto" />
+  </div>
+  <div id="status-hero" class="relative mb-3 rounded-3xl px-10 py-7 status-pill-open">
     <div class="text-center">
-      <div id="status-pill" class="inline-flex items-center justify-center px-12 py-5 rounded-full status-pill-open shadow-lg mx-auto">
-        <span id="hero-status" class="font-extrabold tracking-wide leading-tight text-8xl md:text-9xl">OPEN</span>
-      </div>
+      <span id="hero-status" class="font-extrabold tracking-wide leading-tight text-8xl md:text-9xl drac-open-text">OPEN</span>
       <div id="welcome-line" class="mt-4 text-3xl md:text-4xl text-slate-100">Open to all students - come on in, y'all!</div>
     </div>
   </div>
-  <div class="grid md:grid-cols-3 gap-5 text-center flex-1 items-stretch content-stretch status-grid">
+  <div class="grid md:grid-cols-2 gap-5 text-center flex-1 items-stretch content-stretch status-grid">
     <!-- Date & Time Card -->
     <div class="bg-slate-900/60 border border-slate-700 rounded-2xl p-4 min-h-0 h-full flex flex-col status-card">
       <div class="text-slate-300 text-sm font-semibold text-left">Date & Time</div>
@@ -24,15 +24,9 @@
         <div id="hours-line" class="text-3xl md:text-4xl font-extrabold leading-tight text-slate-100 text-center">Open until 5 PM</div>
       </div>
     </div>
-    <!-- Where Card -->
-    <div class="bg-slate-900/60 border border-slate-700 rounded-2xl p-4 min-h-0 h-full flex flex-col status-card">
-      <div class="text-slate-300 text-sm font-semibold text-left">Where</div>
-      <div class="flex-1 flex items-center justify-center">
-        <div id="location-line" class="text-2xl md:text-3xl font-semibold leading-tight text-slate-100">E251, East Building</div>
-      </div>
-    </div>
-    <div id="kiosk-line" class="text-center text-slate-200 bg-slate-900/60 border border-slate-700 rounded-2xl md:col-span-3 min-h-0 h-full flex items-center justify-center px-6 text-4xl md:text-5xl font-extrabold tracking-wide status-kiosk">
-      Please check in at the kiosk inside
+    <div id="kiosk-line" class="text-center rounded-2xl md:col-span-2 min-h-0 h-full flex items-center justify-center gap-3 px-6 text-4xl md:text-5xl font-extrabold tracking-wide status-kiosk">
+      <svg class="kiosk-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7-7-7M19 12H5"/></svg>
+      <span id="kiosk-text">Please check in at the kiosk inside</span>
     </div>
   </div>
 </section>
