@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>XR Lab Info Board</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="assets/tailwind.generated.css" />
   <link rel="stylesheet" href="style.css" />
-  <meta http-equiv="refresh" content="600" id="meta-refresh" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
@@ -138,43 +138,12 @@
               </div>
               <div class="rounded-2xl border border-slate-700 overflow-hidden">
                 <div class="hidden md:grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-800/80 px-4 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-              <div>Day</div>
-              <div>Status</div>
-              <div>Open</div>
-              <div>Close</div>
+                  <div>Day</div>
+                  <div>Status</div>
+                  <div>Open</div>
+                  <div>Close</div>
                 </div>
-                <div class="space-y-px bg-slate-700">
-                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
-                <div class="text-white font-medium">Monday</div>
-                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-monday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
-                <input id="hours-monday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                <input id="hours-monday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                  </div>
-                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
-                <div class="text-white font-medium">Tuesday</div>
-                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-tuesday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
-                <input id="hours-tuesday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                <input id="hours-tuesday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                  </div>
-                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
-                <div class="text-white font-medium">Wednesday</div>
-                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-wednesday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
-                <input id="hours-wednesday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                <input id="hours-wednesday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                  </div>
-                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
-                <div class="text-white font-medium">Thursday</div>
-                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-thursday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
-                <input id="hours-thursday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                <input id="hours-thursday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                  </div>
-                  <div class="grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center">
-                <div class="text-white font-medium">Friday</div>
-                <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-friday-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
-                <input id="hours-friday-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                <input id="hours-friday-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
-                  </div>
-                </div>
+                <div id="hours-editor-rows" class="space-y-px bg-slate-700"></div>
               </div>
             </section>
           </div>
