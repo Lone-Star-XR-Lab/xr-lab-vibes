@@ -282,9 +282,7 @@
     // Banner
     ensureBanner(s);
     // Refresh interval
-    const meta = document.getElementById('meta-refresh');
     const mins = Number(s.refreshMinutes) || 0;
-    if (meta) meta.setAttribute('content', String(Math.max(0, Math.floor(mins * 60))));
     setAutoReload(mins);
     buildHours();
     buildHoursSummary();
@@ -803,10 +801,25 @@
   }
 
   const modal = document.getElementById('admin-modal');
-  DAY_ORDER.forEach((day) => {
-    const input = document.getElementById(`hours-${dayInputKey(day)}-closed`);
-    if (input) input.addEventListener('change', () => syncHoursEditorRow(day));
-  });
+
+  function buildHoursEditorRows() {
+    const root = document.getElementById('hours-editor-rows');
+    if (!root) return;
+    root.innerHTML = '';
+    DAY_ORDER.forEach((day) => {
+      const key = dayInputKey(day);
+      const row = document.createElement('div');
+      row.className = 'grid md:grid-cols-[1.1fr,auto,132px,132px] gap-3 bg-slate-900 px-4 py-3 items-center';
+      row.innerHTML = `
+        <div class="text-white font-medium">${day}</div>
+        <label class="inline-flex items-center gap-2 text-sm text-slate-300"><input id="hours-${key}-closed" type="checkbox" class="accent-cyan-400"> Closed</label>
+        <input id="hours-${key}-open" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />
+        <input id="hours-${key}-close" type="time" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-slate-100" />`;
+      root.appendChild(row);
+      row.querySelector(`#hours-${key}-closed`).addEventListener('change', () => syncHoursEditorRow(day));
+    });
+  }
+  buildHoursEditorRows();
   function openAdmin() {
     const s = loadSettings();
     document.getElementById('input-title').value = s.title;
@@ -930,22 +943,49 @@
   });
 
   // Load slides from external files then boot app
+  const SLIDE_LOAD_MAX_ATTEMPTS = 3;
+
+  function slideKeyFromSrc(src) {
+    const base = (src.split('/').pop() || '').replace(/\.html?$/i, '');
+    return base.startsWith('faculty') ? 'faculty' : base;
+  }
+
+  function renderSlideLoadError(ph, src) {
+    const el = document.createElement('section');
+    el.setAttribute('data-slide', slideKeyFromSrc(src));
+    el.className = 'h-full hidden flex items-center justify-center text-center p-8';
+    el.innerHTML = `
+      <div>
+        <div class="text-2xl md:text-4xl font-bold text-rose-300">Couldn't load this screen</div>
+        <div class="mt-3 text-slate-400">${src}</div>
+      </div>`;
+    ph.replaceWith(el);
+  }
+
+  async function loadSlide(ph, attempt = 1) {
+    const src = ph.getAttribute('data-src');
+    if (!src) return;
+    try {
+      const resp = await fetch(src, { cache: 'no-store' });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const html = await resp.text();
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html.trim();
+      const node = wrapper.firstElementChild;
+      if (node) ph.replaceWith(node);
+    } catch (e) {
+      console.warn('Failed to load slide', src, e);
+      if (attempt < SLIDE_LOAD_MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 2000));
+        return loadSlide(ph, attempt + 1);
+      }
+      renderSlideLoadError(ph, src);
+    }
+  }
+
   async function loadSlides() {
     const placeholders = Array.from(document.querySelectorAll('.slide-placeholder'));
-    for (const ph of placeholders) {
-      const src = ph.getAttribute('data-src');
-      if (!src) continue;
-      try {
-        const resp = await fetch(src, { cache: 'no-store' });
-        const html = await resp.text();
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = html.trim();
-        const node = wrapper.firstElementChild;
-        if (node) ph.replaceWith(node);
-      } catch (e) {
-        console.warn('Failed to load slide', src, e);
-      }
-    }
+    await Promise.all(placeholders.map((ph) => loadSlide(ph)));
   }
 
   (async () => {
