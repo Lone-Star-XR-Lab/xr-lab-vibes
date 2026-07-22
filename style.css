@@ -6,6 +6,19 @@
 html, body { height: 100%; overflow: hidden; overscroll-behavior: none; }
 /* Dracula base background across all slides */
 body { background: radial-gradient(100% 120% at 0% 0%, #2b2d3a 0%, #1d1e26 60%, #191a21 100%); color: #f8fafc; }
+
+/* Kiosk touch display: prevent accidental text/element selection and the
+   long-press callout menu, but keep normal selection working in admin inputs. */
+body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+input, textarea, [contenteditable] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
 /* Removed promo scaling to keep text crisp */
 /* Hero visual */
 .hero-img { width: clamp(280px, 38vw, 560px); max-height: 360px; filter: drop-shadow(0 8px 28px rgba(0,0,0,0.4)); }
@@ -13,6 +26,8 @@ body { background: radial-gradient(100% 120% at 0% 0%, #2b2d3a 0%, #1d1e26 60%, 
 /* Ensure each slide clips its contents to the rounded panel */
 section[data-slide] { overflow: hidden; }
 .xr-brand { color: var(--drac-red); }
+/* Center when the content fits, but never overflow into a clipped edge */
+.promo-content { justify-content: safe center; }
 .faculty-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: clamp(14px, 2vw, 28px); align-items: stretch; flex: 1; min-height: 0; width: 100%; }
 .faculty-grid > * { height: 100%; }
 .faculty-content { display: flex; flex-direction: column; justify-content: safe center; gap: clamp(20px, 3vw, 32px); height: 100%; }
@@ -489,11 +504,11 @@ section[data-slide] { overflow: hidden; }
 }
 
 /* Memes */
-.meme-grid { display:grid; grid-template-columns: 1fr; gap:12px; }
-@media (min-width: 768px){ .meme-grid { grid-template-columns: repeat(2, 1fr);} }
-.meme-card { background: rgba(15, 23, 42, 0.6); border:1px solid rgba(71,85,105,0.7); border-radius: 14px; padding:10px; }
-.meme-img { width:100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; display:block; background:#0b1220; border:1px solid rgba(71,85,105,0.6); }
-.meme-caption { color:#cbd5e1; font-size:0.95rem; margin-top:6px; text-align:center; }
+.meme-grid { display:grid; grid-template-columns: 1fr; grid-template-rows: repeat(4, minmax(0, 1fr)); gap:12px; flex: 1; min-height: 0; }
+@media (min-width: 768px){ .meme-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); } }
+.meme-card { background: rgba(15, 23, 42, 0.6); border:1px solid rgba(71,85,105,0.7); border-radius: 14px; padding:10px; display:flex; flex-direction:column; min-height:0; }
+.meme-img { width:100%; flex:1; min-height:0; object-fit: cover; border-radius: 10px; display:block; background:#0b1220; border:1px solid rgba(71,85,105,0.6); }
+.meme-caption { color:#cbd5e1; font-size:0.95rem; margin-top:6px; text-align:center; flex-shrink:0; }
 
 /* Dracula theme helpers (scoped utility classes) */
 :root {

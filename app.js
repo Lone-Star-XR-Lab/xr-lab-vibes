@@ -2,6 +2,12 @@
 // Runs after DOM is parsed via defer attribute on this script.
 (function () {
   'use strict';
+  // Kiosk touch display: block the right-click / long-press context menu
+  // outside of admin inputs, since it isn't useful on a wall-mounted board.
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target.closest('input, textarea, [contenteditable]')) return;
+    e.preventDefault();
+  });
   // Shared state used by multiple functions
   let currentSettings = null;
   const SETTINGS_STORAGE_KEY = 'vibeBoardSettings';
